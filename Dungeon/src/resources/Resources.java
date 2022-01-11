@@ -18,6 +18,14 @@ public class Resources {
 	public static final int MIDDLE_TILE_Y = (HEIGHT_IN_TILES-1)/2;
 	public static final int MAX_DOORS = 5;
 	
+	public static final int WORLD_SIZE = 5;
+	public static final int MIDDLE_WORLD = 2;
+	
+	//gui
+	public static final int MAP_UNIT_SIZE = Tile.SIZE/WORLD_SIZE;
+	
+
+	
 	public static final byte FLOOR = 0;
 	public static final byte WALL = 1;
 	public static final byte DOOR = 3;

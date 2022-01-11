@@ -82,6 +82,19 @@ private static final long serialVersionUID = 1L;
 		this.right = right;
 	}
 	
+	public boolean isFacingUp() {
+		return this.up;
+	}
+	public boolean isFacingDown() {
+		return this.down;
+	}
+	public boolean isFacingLeft() {
+		return this.left;
+	}
+	public boolean isFacingRight() {
+		return this.right;
+	}
+	
 	public void setCenterX(int x) {
 		super.x = x - super.width/2;
 	}

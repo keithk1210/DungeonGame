@@ -4,29 +4,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import resources.Resources;
+
 public class World {
 	
-	private List<Room> rooms;
-	private Room currentRoom;
+	private Room[][] rooms;
+	
 	
 	public World() {
-		rooms = new ArrayList<Room>();
+		rooms = new Room[Resources.WORLD_SIZE][Resources.WORLD_SIZE];
 	}
 	
-	public void addRoom(Room room) {
-		rooms.add(room);
-	}
-	
-	public List<Room> getRooms() {
-		return rooms;
+	public void setRooms(Room[][] _rooms) {
+		rooms = _rooms;
 	}
 	
 	public Room getRoomAt(int x, int y) {
-		for(Room room : rooms) {
-				if (x == room.getX() && y == room.getY()) {
-					return room;
-		}
-	}
-		return null;
+		return rooms[y][x];
 	}
 }

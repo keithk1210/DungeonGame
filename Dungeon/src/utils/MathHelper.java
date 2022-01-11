@@ -1,6 +1,13 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class MathHelper {
+	
+	private static final Random r = new Random();
+	private static final int probOfDoor = 3;
 	
 	public enum Direction {
 		NORTH(0, -1),
@@ -23,6 +30,34 @@ public class MathHelper {
 			this.dirX = dirX;
 			this.dirY = dirY;
 		}
+	}
+	
+	static public List<Direction> randomExits() {
+		List<Direction> exits = new ArrayList<Direction>();
+		if (rollDice()) {
+			exits.add(Direction.NORTH);
+		}
+		if (rollDice()) {
+			exits.add(Direction.SOUTH);
+		}
+		if (rollDice()) {
+			exits.add(Direction.EAST);
+		}
+		if (rollDice()) {
+			exits.add(Direction.WEST);
+		}
+		return exits;
+	}
+	
+	static public Direction randomExit() {
+		return Direction.values()[r.nextInt(Direction.values().length)];
+	}
+	
+	static public boolean rollDice() {
+		if (r.nextInt(probOfDoor) == probOfDoor-1) {
+			return true;
+		}
+		return false;
 	}
 
 }

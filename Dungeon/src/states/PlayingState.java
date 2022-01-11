@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import entities.Player;
 import gamestates.GameState;
 import gamestates.GameStateManager;
+import gui.GUI;
 import resources.Resources;
 import world.Room;
 import world.World;
@@ -20,9 +21,10 @@ public class PlayingState extends GameState {
 	protected PlayingState(GameStateManager manager) {
 		super(manager);
 		this.generator = new LevelGenerator();
+		generator.generate();
 		this.player = new Player();
 		this.world = new World();
-		generator.createRoom(world);
+		world.setRooms(generator.getRooms());
 		
 	}
 	
@@ -42,8 +44,9 @@ public class PlayingState extends GameState {
 	}
 	@Override
 	protected void render(Graphics g) {
+		this.world.getRoomAt(player.getWorldX(),player.getWorldY()).render(g);
 		this.player.render(g);
-		this.world.getRoomAt(player.getWorldX(), player.getWorldY()).render(g);;
+		GUI.render(g,this.player);
 	}
 	
 
