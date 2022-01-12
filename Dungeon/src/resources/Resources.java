@@ -22,7 +22,13 @@ public class Resources {
 	public static final int MIDDLE_WORLD = 2;
 	
 	//gui
+	
+	public static final int MAP_ROOM_SIZE = 5;
+	public static final int MAP_ROOM_MID_TILE = (MAP_ROOM_SIZE-1)/2;
 	public static final int MAP_UNIT_SIZE = Tile.SIZE/WORLD_SIZE;
+	public static final int MIDDLE_MAP_UNIT = MAP_UNIT_SIZE/2;
+	public static final int TILE_ON_MAP_SIZE_WIDTH = MAP_UNIT_SIZE/MAP_ROOM_SIZE;
+	public static final int TILE_ON_MAP_SIZE_HEIGHT = MAP_UNIT_SIZE/MAP_ROOM_SIZE;
 	
 
 	

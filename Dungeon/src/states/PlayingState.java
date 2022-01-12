@@ -46,7 +46,7 @@ public class PlayingState extends GameState {
 	protected void render(Graphics g) {
 		this.world.getRoomAt(player.getWorldX(),player.getWorldY()).render(g);
 		this.player.render(g);
-		GUI.render(g,this.player);
+		GUI.render(g,this.player,this.world);
 	}
 	
 

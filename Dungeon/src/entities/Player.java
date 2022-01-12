@@ -21,6 +21,7 @@ public class Player extends Entity {
 		posXInWorld = Resources.MIDDLE_WORLD;
 		posYInWorld = Resources.MIDDLE_WORLD;
 		GUI.setDiscovered(posXInWorld, posYInWorld);
+		addCoordForGUI();
 	}
 	
 	@Override
@@ -34,7 +35,7 @@ public class Player extends Entity {
 	public void move() {
 		super.move();
 		updateWorldAndRoomPosition();
-		addCoordForGUI();
+		
 		
 	}
 	
@@ -43,32 +44,28 @@ public class Player extends Entity {
 			this.x = Resources.SCREEN_WIDTH - Tile.SIZE;
 			posXInWorld--;
 			GUI.setDiscovered(posXInWorld, posYInWorld);
+			addCoordForGUI();
 		} else if (this.x >= Resources.SCREEN_WIDTH) {
 			this.x = 0;
 			posXInWorld++;
 			GUI.setDiscovered(posXInWorld, posYInWorld);
+			addCoordForGUI();
 		} else if (this.y < 0) {
 			this.y = Resources.SCREEN_HEIGHT - Tile.SIZE;
 			posYInWorld--;
 			GUI.setDiscovered(posXInWorld, posYInWorld);
+			addCoordForGUI();
 		} else if (this.y >= Resources.SCREEN_HEIGHT) {
 			this.y = 0;
 			posYInWorld++;
 			GUI.setDiscovered(posXInWorld, posYInWorld);
+			addCoordForGUI();
 		}
 	}
 	
 	
 	private void addCoordForGUI() {
-		if (this.x < 0) {
-			GUI.addNewCoord(new Coord(Resources.SCREEN_WIDTH-Tile.SIZE + ((getWorldX()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/4, ((getWorldY()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/2));
-		} else if (this.x >= Resources.SCREEN_WIDTH) {
-			GUI.addNewCoord(new Coord(Resources.SCREEN_WIDTH-Tile.SIZE + ((getWorldX()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/4, ((getWorldY()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/2));
-		} else if (this.y < 0) {
-			GUI.addNewCoord(new Coord(Resources.SCREEN_WIDTH-Tile.SIZE + ((getWorldX()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/4, ((getWorldY()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/2));
-		} else if (this.y >= Resources.SCREEN_HEIGHT) {
-			GUI.addNewCoord(new Coord(Resources.SCREEN_WIDTH-Tile.SIZE + ((getWorldX()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/4, ((getWorldY()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/2));
-		}
+		GUI.addNewCoord(new Coord(Resources.SCREEN_WIDTH-Tile.SIZE + ((getWorldX()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/2, ((getWorldY()) * Resources.MAP_UNIT_SIZE) + Resources.MAP_UNIT_SIZE/2));
 	}
 	
 	public int getWorldX() {
