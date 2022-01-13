@@ -10,8 +10,9 @@ import java.util.Queue;
 
 import entities.Player;
 import resources.Resources;
-import utils.MathHelper;
 import utils.MathHelper.Direction;
+import utils.Structs.Coord;
+import utils.Structs.Line;
 import world.Tile;
 import world.World;
 
@@ -31,13 +32,13 @@ public class GUI {
 			for (int x = 0; x < Tile.SIZE; x += Resources.MAP_UNIT_SIZE) {
 				
 				if (discovered[y/Resources.MAP_UNIT_SIZE][x/Resources.MAP_UNIT_SIZE]) {
-					g.setColor(Color.green);
+					g.setColor(Color.white);
 					g.fillRect(x + (Resources.SCREEN_WIDTH-Tile.SIZE), y, Resources.MAP_UNIT_SIZE, Resources.MAP_UNIT_SIZE);
 					g.setColor(Resources.WALL_COLOR);
 					drawRoomOnMap(g, world, x, y);
 					
 				} else {
-					g.setColor(Color.red);
+					g.setColor(Color.black);
 					g.fillRect(x + (Resources.SCREEN_WIDTH-Tile.SIZE), y, Resources.MAP_UNIT_SIZE, Resources.MAP_UNIT_SIZE);
 				}
 				
@@ -54,9 +55,9 @@ public class GUI {
 	}
 	
 	public static void initlaizeDiscovered() {
-		discovered = new boolean[Resources.WORLD_SIZE][Resources.WORLD_SIZE];
-		for (int y = 0; y < Resources.WORLD_SIZE; y++) {
-			for (int x = 0; x < Resources.WORLD_SIZE; x++) {
+		discovered = new boolean[Resources.GAME_WORLD_SIZE][Resources.GAME_WORLD_SIZE];
+		for (int y = 0; y < Resources.GAME_WORLD_SIZE; y++) {
+			for (int x = 0; x < Resources.GAME_WORLD_SIZE; x++) {
 				discovered[y][x] = false;
 			}
 		}
@@ -104,43 +105,6 @@ public class GUI {
 		}
 	}
 	
-	public static class Line {
-		private Coord c1;
-		private Coord c2;
-		
-		public Line(Coord _c1, Coord _c2) {
-			c1 = _c1;
-			c2 = _c2;
-			
-		}
-		
-		public Coord getC1() {
-			return c1;
-		}
-		public Coord getC2() {
-			return c2;
-		}
-		
-	}
-	
-	public static class Coord {
-		private int x;
-		private int y;
-		
-		public Coord(int _x, int _y) {
-			x = _x;
-			y = _y;
-		}
-		
-		public int getX() {
-			return x;
-		}
-		
-		public int getY() {
-			return y;
-		}
-		
-		
-	}
+
 
 }

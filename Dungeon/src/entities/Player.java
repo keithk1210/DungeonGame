@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import gui.GUI;
-import gui.GUI.Coord;
 import resources.Resources;
+import utils.Structs.Coord;
 import world.Tile;
 
 public class Player extends Entity {
@@ -15,11 +15,17 @@ public class Player extends Entity {
 	private int posYInWorld;
 	
 	
-	public Player() {
+	public Player(int worldSize) {
 		super(Resources.MIDDLE_X/Tile.SIZE, Resources.MIDDLE_Y/Tile.SIZE);
 		speed = 10;
-		posXInWorld = Resources.MIDDLE_WORLD;
-		posYInWorld = Resources.MIDDLE_WORLD;
+		if (worldSize != Resources.DEBUG_WORLD_SIZE) {
+			posXInWorld = (worldSize-1)/2;
+			posYInWorld = (worldSize-1)/2;
+			
+		} else {
+			posXInWorld = 0;
+			posYInWorld = 0;
+		}
 		GUI.setDiscovered(posXInWorld, posYInWorld);
 		addCoordForGUI();
 	}

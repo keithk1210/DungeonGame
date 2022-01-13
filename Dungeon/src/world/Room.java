@@ -1,8 +1,10 @@
 package world;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.HashSet;
 
+import entities.Enemy;
 import resources.Resources;
 import utils.MathHelper;
 import utils.MathHelper.Direction;
@@ -14,16 +16,18 @@ public class Room {
 	private int posXInWorld;
 	private int posYInWorld;
 	private Tile[][] tiles;
+	private ArrayList<Enemy> enemies;
 	
 	public Room (int _posXInWorld, int _posYInWorld, MathHelper.Direction... _exits) {
 		posXInWorld = _posXInWorld;
 		posYInWorld = _posYInWorld;
 		tiles = new Tile[Resources.WIDTH_IN_TILES][Resources.HEIGHT_IN_TILES];
 		exits = new HashSet<MathHelper.Direction>();
+		enemies = new ArrayList<Enemy>();
 		for (MathHelper.Direction direction : _exits) {
 			this.exits.add(direction);
 		}
-		setBlankTiles();
+		setFloorTiles();
 		setWallTiles();
 	}
 	
@@ -31,9 +35,9 @@ public class Room {
 		
 	}
 	
-	private void setBlankTiles() {
-		for (int y = 1; y < Resources.WIDTH_IN_TILES - 1; y++) {
-			for (int x = 1; x < Resources.HEIGHT_IN_TILES - 1; x++) {
+	private void setFloorTiles() {
+		for (int y = 0; y < Resources.WIDTH_IN_TILES; y++) {
+			for (int x = 0; x < Resources.HEIGHT_IN_TILES; x++) {
 				tiles[y][x] = new Tile(Resources.FLOOR,x,y,false);
 			}
 		}
@@ -75,14 +79,28 @@ public class Room {
 	}
 	
 	public void render(Graphics g) {
-		for (int y = 0; y < tiles[0].length; y++) {
-			for(int x = 0; x < tiles.length; x++) {
+		for (int y = 0; y < tiles.length; y++) {
+			for(int x = 0; x < tiles[y].length; x++) {
 				if (tiles[y][x].getId() == Resources.WALL) {
-					g.setColor(Resources.WALL_COLOR);
-					g.fillRect(x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE);
+					if (((x == 0 || x == tiles[y].length - 1) && y == Resources.MIDDLE_TILE_Y - 1) && tiles[y+1][x].getId() == Resources.DOOR) {
+						g.drawImage(Resources.TEXTURES.get(Resources.BROWN_WALL_FRONT_FACE), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
+						continue;
+					} else if  ((x == 0 || x == tiles[y].length - 1) && y != tiles.length - 1) {
+						g.drawImage(Resources.TEXTURES.get(Resources.BROWN_WALL_ABOVE), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
+						continue;
+					} else {
+						g.drawImage(Resources.TEXTURES.get(Resources.BROWN_WALL_FRONT_FACE), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
+					}
+				} else if (tiles[y][x].getId() == Resources.FLOOR || tiles[y][x].getId() == Resources.DOOR) {
+					g.drawImage(Resources.TEXTURES.get(Resources.BROWN_FLOOR), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
 				}
 			}
 			
+		}
+		if (this.hasEnemies()) {
+			for (Enemy enemy : enemies) {
+				enemy.render(g);
+			}
 		}
 	}
 	
@@ -102,5 +120,13 @@ public class Room {
 	}
 	public void removeExit(Direction d) {
 		exits.remove(d);
+	}
+	
+	public void spawnEnemy(Enemy enemy) {
+		
+			enemies.add(enemy);
+	}
+	public boolean hasEnemies() {
+		return enemies.size() > 0;
 	}
 }

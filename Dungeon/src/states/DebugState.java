@@ -6,33 +6,37 @@ import java.awt.event.KeyEvent;
 import entities.Player;
 import gamestates.GameState;
 import gamestates.GameStateManager;
-import gui.GUI;
 import resources.Resources;
 import world.Room;
 import world.World;
 import world.generator.LevelGenerator;
+import world.generator.Populator;
 
-public class PlayingState extends GameState {
+public class DebugState extends GameState {
 	
 	private LevelGenerator generator;
+	private Populator populator;
 	private World world;
 	private Player player;
 	
-	protected PlayingState(GameStateManager manager) {
+	
+	public DebugState(GameStateManager manager) {
 		super(manager);
-		this.world = new World(Resources.GAME_WORLD_SIZE);
+		this.world = new World(Resources.DEBUG_WORLD_SIZE);
 		this.generator = new LevelGenerator(world);
 		generator.generate();
 		world.setRooms(generator.getRooms());
 		this.player = new Player(world.getSize());
+		this.populator = new Populator(player,world);
+		populator.populate();
 	}
-	
+
 	@Override
 	protected void loop() {
 		this.player.move();
 		this.collisions();
 	}
-
+	
 	private void collisions() {
 		Room currentRoom = this.world.getRoomAt(player.getWorldX(), player.getWorldY());
 		for(int i=0;i<Resources.WIDTH_IN_TILES;i++) {
@@ -41,14 +45,11 @@ public class PlayingState extends GameState {
 			}
 		}
 	}
-	@Override
+	@Override 
 	protected void render(Graphics g) {
 		this.world.getRoomAt(player.getWorldX(),player.getWorldY()).render(g);
 		this.player.render(g);
-		GUI.render(g,this.player,this.world);
 	}
-	
-
 	@Override
 	protected void keyPressed(int keyCode) {
 		switch(keyCode) {

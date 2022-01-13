@@ -9,10 +9,12 @@ import resources.Resources;
 public class World {
 	
 	private Room[][] rooms;
+	private int size;
 	
 	
-	public World() {
-		rooms = new Room[Resources.WORLD_SIZE][Resources.WORLD_SIZE];
+	public World(int _size) {
+		size = _size;
+		rooms = new Room[size][size];
 	}
 	
 	public void setRooms(Room[][] _rooms) {
@@ -21,5 +23,8 @@ public class World {
 	
 	public Room getRoomAt(int x, int y) {
 		return rooms[y][x];
+	}
+	public int getSize() {
+		return size;
 	}
 }

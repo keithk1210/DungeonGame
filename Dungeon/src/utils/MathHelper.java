@@ -32,6 +32,14 @@ public class MathHelper {
 		}
 	}
 	
+	public static int randomInt(int upperBound) {
+		return r.nextInt(upperBound);
+	}
+
+	public static int randomInt(int lowerBound, int upperBound) {
+		return r.nextInt(lowerBound, upperBound);
+	}
+	
 	static public List<Direction> randomExits() {
 		List<Direction> exits = new ArrayList<Direction>();
 		if (rollDice()) {

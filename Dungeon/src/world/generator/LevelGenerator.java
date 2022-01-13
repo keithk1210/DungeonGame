@@ -2,21 +2,26 @@ package world.generator;
 import java.util.Iterator;
 
 import gui.GUI;
-import resources.Resources;
 import utils.MathHelper;
 import utils.MathHelper.Direction;
 import world.Room;
+import world.World;
 
 public class LevelGenerator {
 	
 	private Room[][] rooms;
+	private World world;
+	
+	public LevelGenerator(World _world) {
+		world = _world;
+	}
 	
 
 	public void generate() {
 		GUI.initlaizeDiscovered();
-		rooms = new Room[Resources.WORLD_SIZE][Resources.WORLD_SIZE];
-		for (int y = 0; y < Resources.WORLD_SIZE; y++) {
-			for (int x = 0; x < Resources.WORLD_SIZE; x++) {
+		rooms = new Room[world.getSize()][world.getSize()];
+		for (int y = 0; y < world.getSize(); y++) {
+			for (int x = 0; x < world.getSize(); x++) {
 				rooms[y][x] = new Room(x,y,MathHelper.randomExits().toArray(Direction[]::new));
 				Iterator<MathHelper.Direction> iterator = rooms[y][x].getExits().iterator();
 				while (iterator.hasNext()) {
@@ -29,16 +34,16 @@ public class LevelGenerator {
 			}
 		}
 		connectExits();
-		for (int y = 0; y < Resources.WORLD_SIZE; y++) {
-			for (int x = 0; x < Resources.WORLD_SIZE; x++) {
+		for (int y = 0; y < world.getSize(); y++) {
+			for (int x = 0; x < world.getSize(); x++) {
 				rooms[y][x].setDoorTiles();
 			}
 		}
 	}
 	
 	private void connectExits() {
-		for (int y = 0; y < Resources.WORLD_SIZE; y++) {
-				for (int x = 0; x < Resources.WORLD_SIZE; x++) {
+		for (int y = 0; y < world.getSize(); y++) {
+				for (int x = 0; x < world.getSize(); x++) {
 					for (MathHelper.Direction direction : rooms[y][x].getExits()) {
 						if (isInWorld(x + direction.dirX, y + direction.dirY)) {
 							if (!rooms[y + direction.dirY][x + direction.dirX].getExits().contains(direction.opposite)) {
@@ -51,15 +56,15 @@ public class LevelGenerator {
 		}
 	
 	public boolean isInWorld(int x, int y) {
-		return x >= 0 && x <= 4 && y >= 0 && y <= 4;
+		return x >= 0 && x < world.getSize() && y >= 0 && y < world.getSize();
 	}
 	
 	public Room[][] getRooms() {
 		return rooms;
 	}
 	private void printRooms() {
-		for (int y = 0; y < Resources.WORLD_SIZE; y++) {
-			for (int x = 0; x < Resources.WORLD_SIZE; x++) {
+		for (int y = 0; y < world.getSize(); y++) {
+			for (int x = 0; x < world.getSize(); x++) {
 				System.out.print("x " + x + " y " + y + " " + rooms[y][x].getExits());
 			}
 			System.out.println("");
