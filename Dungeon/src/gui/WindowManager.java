@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -33,6 +35,24 @@ public class WindowManager {
 			this.panel.addKeyListener(listener);
 		} catch(NullPointerException e) {
 			System.err.println("[WindowManager]: Error! Tried to add KeyListener before JPanel");
+			System.exit(-1);
+		}
+	}
+	
+	public void addMouseMotionListener(MouseMotionListener listener) {
+		try {
+			this.panel.addMouseMotionListener(listener);
+		} catch(NullPointerException e) {
+			System.err.println("[WindowManager]: Error! Tried to add MouseMotionListener before JPanel");
+			System.exit(-1);
+		}
+	}
+	
+	public void addMouseListener(MouseListener listener) {
+		try {
+			this.panel.addMouseListener(listener);
+		} catch(NullPointerException e) {
+			System.err.println("[WindowManager]: Error! Tried to add MouseMotionListener before JPanel");
 			System.exit(-1);
 		}
 	}

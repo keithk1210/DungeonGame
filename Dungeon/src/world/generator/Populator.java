@@ -2,6 +2,8 @@ package world.generator;
 
 import entities.Enemy;
 import entities.Player;
+import resources.Resources;
+import utils.MathHelper;
 import world.World;
 
 public class Populator {
@@ -17,8 +19,10 @@ public class Populator {
 	public void populate() {
 		for (int y = 0; y < world.getSize(); y++) {
 			for (int x = 0; x < world.getSize(); x++) {
-				if (!world.getRoomAt(x, y).hasEnemies() && player.getWorldX() == x && player.getWorldY() == y) {
-					world.getRoomAt(x, y).spawnEnemy(new Enemy(player));
+				if (!world.getRoomAt(x, y).hasEnemies()) {
+					if (MathHelper.randomInt(100) < Resources.PROB_OF_ENEMY) {
+						world.getRoomAt(x, y).spawnEnemy(new Enemy(player));
+					}
 				}
 			}
 		}

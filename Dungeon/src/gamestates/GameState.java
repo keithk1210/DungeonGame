@@ -1,6 +1,7 @@
 package gamestates;
 
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 
 public abstract class GameState {
 	protected GameStateManager gameStateManager;
@@ -16,4 +17,8 @@ public abstract class GameState {
 	protected abstract void keyPressed(int keyCode);
 	
 	protected abstract void keyReleased(int keyCode);
+	
+	protected abstract void mouseMoved(MouseEvent e);
+	
+	protected abstract void mouseClicked(MouseEvent e);
 }

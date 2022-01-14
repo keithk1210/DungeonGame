@@ -2,9 +2,11 @@ package states;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 import entities.Enemy;
 import entities.Player;
+import game.projectiles.Projectile;
 import gamestates.GameState;
 import gamestates.GameStateManager;
 import resources.Resources;
@@ -27,9 +29,9 @@ public class DebugState extends GameState {
 		this.generator = new LevelGenerator(world);
 		generator.generate();
 		world.setRooms(generator.getRooms());
-		this.player = new Player(world.getSize());
-		this.populator = new Populator(player,world);
-		populator.populate();
+		this.player = new Player(world);
+		//this.populator = new Populator(player,world);
+		//populator.populate();
 	}
 
 	@Override
@@ -38,7 +40,20 @@ public class DebugState extends GameState {
 		for (Enemy enemy : this.world.getRoomAt(player.getWorldX(), player.getWorldY()).getEnemies()) {
 			enemy.move();
 		}
+		for (Projectile projectile:this.world.getProjectiles()) {
+			projectile.move();
+		}
 		this.collisions();
+	}
+	
+	@Override
+	protected void mouseMoved(MouseEvent e) {
+		this.player.mouseMoved(e);
+	}
+	
+	@Override
+	protected void mouseClicked(MouseEvent e) {
+		this.player.mouseClicked(e);
 	}
 	
 	private void collisions() {
@@ -53,6 +68,10 @@ public class DebugState extends GameState {
 	protected void render(Graphics g) {
 		this.world.getRoomAt(player.getWorldX(),player.getWorldY()).render(g);
 		this.player.render(g);
+		this.player.getGun().render(g);
+		for (Projectile projectile:this.world.getProjectiles()) {
+			projectile.render(g);
+		}
 	}
 	@Override
 	protected void keyPressed(int keyCode) {

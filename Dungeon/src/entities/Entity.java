@@ -25,7 +25,7 @@ private static final long serialVersionUID = 1L;
 		this.down = false;
 		this.left = false;
 		this.right = false;
-		this.speed = 4;
+		this.speed = 3 * 2;
 	}
 	
 	public void move() {

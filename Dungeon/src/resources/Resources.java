@@ -21,8 +21,10 @@ public class Resources {
 	public static final int MIDDLE_TILE_X = (WIDTH_IN_TILES-1)/2;
 	public static final int MIDDLE_TILE_Y = (HEIGHT_IN_TILES-1)/2;
 	public static final int MAX_DOORS = 5;
+	public static final int PROB_OF_ENEMY = 50;
 	
-	public static final int GAME_WORLD_SIZE = 5;
+	public static final int GAME_WORLD_SIZE = 
+			5;
 	public static final int DEBUG_WORLD_SIZE = 1;
 	public static final int MIDDLE_WORLD = 2;
 	
@@ -48,6 +50,18 @@ public class Resources {
 	public static final byte BROWN_WALL_FRONT_FACE = 0;
 	public static final byte BROWN_WALL_ABOVE = 1;
 	public static final byte BROWN_FLOOR = 2;
+	public static final byte CONJ_BLUE_FRONT = 3;
+	public static final byte CONJ_BLUE_FRONT_LEFT = 4;
+	public static final byte CONJ_BLUE_FRONT_RIGHT = 5;
+	public static final byte CONJ_BLUE_LEFT = 6;
+	public static final byte CONJ_BLUE_LEFT_LEFT = 7;
+	public static final byte CONJ_BLUE_LEFT_RIGHT = 8;
+	public static final byte CONJ_BLUE_RIGHT = 9;
+	public static final byte CONJ_BLUE_RIGHT_RIGHT = 10;
+	public static final byte CONJ_BLUE_RIGHT_LEFT = 11;
+	public static final byte CONJ_BLUE_BACK = 12;
+	public static final byte CONJ_BLUE_BACK_LEFT = 13;
+	public static final byte CONJ_BLUE_BACK_RIGHT = 14;
 	
 	
 	

@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 import gamestates.GameState;
 import gamestates.GameStateManager;
-import gui.WindowManager;
 import resources.Resources;
 
 public class MainMenu extends GameState {
@@ -27,6 +27,13 @@ public class MainMenu extends GameState {
 	@Override
 	protected void loop() {
 	}
+	
+	@Override
+	protected void mouseMoved(MouseEvent e) {
+		
+	}
+	
+	protected void mouseClicked(MouseEvent e) {}
 
 	@Override
 	protected void render(Graphics graphics) {

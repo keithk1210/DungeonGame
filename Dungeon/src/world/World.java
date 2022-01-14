@@ -1,20 +1,20 @@
 package world;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
-import resources.Resources;
+import game.projectiles.Projectile;
 
 public class World {
 	
 	private Room[][] rooms;
+	private HashSet<Projectile> projectiles;
 	private int size;
 	
 	
 	public World(int _size) {
 		size = _size;
 		rooms = new Room[size][size];
+		projectiles = new HashSet<Projectile>();
 	}
 	
 	public void setRooms(Room[][] _rooms) {
@@ -26,5 +26,12 @@ public class World {
 	}
 	public int getSize() {
 		return size;
+	}
+	
+	public HashSet<Projectile> getProjectiles() {
+		return projectiles;
+	}
+	public void addProjectile(Projectile projectile) {
+		projectiles.add(projectile);
 	}
 }

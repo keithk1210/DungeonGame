@@ -1,6 +1,7 @@
 package gamestates;
 
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -60,5 +61,22 @@ public class GameStateManager {
 			System.exit(-1);
 		}
 	}
+	
+	public void mouseMoved(MouseEvent ev) {
+		try {
+			this.states.peek().mouseMoved(ev);
+		} catch(EmptyStackException e) {
+			System.err.println("[GameStateManager]: Error! GameState stack is empty!");
+			System.exit(-1);
+		}
+	}
 
+	public void mouseClicked(MouseEvent ev) {
+		try {
+			this.states.peek().mouseClicked(ev);
+		} catch(EmptyStackException e) {
+			System.err.println("[GameStateManager]: Error! GameState stack is empty!");
+			System.exit(-1);
+		}
+	}
 }

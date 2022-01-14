@@ -2,25 +2,32 @@ package entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 
+import game.weapons.Gun;
 import gui.GUI;
 import resources.Resources;
 import utils.Structs.Coord;
 import world.Tile;
+import world.World;
 
 public class Player extends Entity {
 	
 	private static final long serialVersionUID = 1L;
 	private int posXInWorld;
 	private int posYInWorld;
+	private Gun gun;
+	private World world;
 	
 	
-	public Player(int worldSize) {
+	public Player(World _world) {
 		super(Resources.MIDDLE_X/Tile.SIZE, Resources.MIDDLE_Y/Tile.SIZE);
+		world = _world;
+		gun = new Gun(this);
 		speed = 10;
-		if (worldSize != Resources.DEBUG_WORLD_SIZE) {
-			posXInWorld = (worldSize-1)/2;
-			posYInWorld = (worldSize-1)/2;
+		if (world.getSize() != Resources.DEBUG_WORLD_SIZE) {
+			posXInWorld = (world.getSize()-1)/2;
+			posYInWorld = (world.getSize()-1)/2;
 			
 		} else {
 			posXInWorld = 0;
@@ -41,6 +48,14 @@ public class Player extends Entity {
 	public void move() {
 		super.move();
 		updateWorldAndRoomPosition();
+	}
+	
+	public void mouseMoved(MouseEvent e) {
+		
+	}
+	
+	public void mouseClicked(MouseEvent e) {
+		gun.shoot(e);
 	}
 	
 	private void updateWorldAndRoomPosition() {
@@ -79,5 +94,12 @@ public class Player extends Entity {
 		return posYInWorld;
 	}
 	
+	public Gun getGun() {
+		return gun;
+	}
+	
+	public World getWorld() {
+		return world;
+	}
 
 }

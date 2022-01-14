@@ -2,7 +2,9 @@ package states;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
+import entities.Enemy;
 import entities.Player;
 import gamestates.GameState;
 import gamestates.GameStateManager;
@@ -11,12 +13,14 @@ import resources.Resources;
 import world.Room;
 import world.World;
 import world.generator.LevelGenerator;
+import world.generator.Populator;
 
 public class PlayingState extends GameState {
 	
 	private LevelGenerator generator;
 	private World world;
 	private Player player;
+	private Populator populator;
 	
 	protected PlayingState(GameStateManager manager) {
 		super(manager);
@@ -24,12 +28,24 @@ public class PlayingState extends GameState {
 		this.generator = new LevelGenerator(world);
 		generator.generate();
 		world.setRooms(generator.getRooms());
-		this.player = new Player(world.getSize());
+		this.player = new Player(world);
+		this.populator = new Populator(player,world);
+		populator.populate();
 	}
+	
+	@Override
+	protected void mouseMoved(MouseEvent e) {
+		
+	}
+	
+	protected void mouseClicked(MouseEvent e) {}
 	
 	@Override
 	protected void loop() {
 		this.player.move();
+		for (Enemy enemy : this.world.getRoomAt(player.getWorldX(), player.getWorldY()).getEnemies()) {
+			enemy.move();
+		}
 		this.collisions();
 	}
 
@@ -38,6 +54,11 @@ public class PlayingState extends GameState {
 		for(int i=0;i<Resources.WIDTH_IN_TILES;i++) {
 			for(int j=0;j<Resources.HEIGHT_IN_TILES;j++) {
 				this.player.handleCollisionWith(currentRoom.getTileAt(i, j));
+				if (currentRoom.hasEnemies()) {
+					for(Enemy enemy : currentRoom.getEnemies()) {
+						enemy.handleCollisionWith(currentRoom.getTileAt(i, j));
+					}
+				}
 			}
 		}
 	}

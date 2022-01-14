@@ -12,7 +12,6 @@ import utils.MathHelper.Direction;
 public class Room {
 	
 	private HashSet<MathHelper.Direction> exits;
-	private boolean key;
 	private int posXInWorld;
 	private int posYInWorld;
 	private Tile[][] tiles;

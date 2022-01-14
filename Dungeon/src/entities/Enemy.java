@@ -15,11 +15,10 @@ public class Enemy extends Entity {
 	
 	static final long serialVersionUID = 1L;
 	private Player target;
-	private final static double ERROR = .5;
+	private static final double ERROR = .5;
 	
 	public Enemy(Player _target) {
-		//super(MathHelper.randomInt(1, Resources.WIDTH_IN_TILES-1),(MathHelper.randomInt(1, Resources.HEIGHT_IN_TILES-1)));
-		super(Resources.WIDTH_IN_TILES-2,Resources.HEIGHT_IN_TILES-2);
+		super(MathHelper.randomInt(1, Resources.WIDTH_IN_TILES-1),(MathHelper.randomInt(1, Resources.HEIGHT_IN_TILES-1)));
 		target = _target;
 	}
 	
@@ -61,15 +60,6 @@ public class Enemy extends Entity {
 	public void render(Graphics g) {
 		g.setColor(Color.red);
 		g.fillRect((int)this.getX(),(int)this.getY(), Tile.SIZE, Tile.SIZE);
-		drawLines(g);
-	}
-	
-	public void drawLines(Graphics g) {
-		g.setColor(Color.white);
-		g.drawLine((int)this.getCenterX(),(int)this.getCenterY(),(int)target.getCenterX(),(int)target.getCenterY());
-		//g.drawLine((int)this.getCenterX(),(int)this.getCenterY(),(int)moveDiagonally(g).getX(),(int)this.getCenterY());
-		//g.drawLine((int)moveDiagonally(g).getX(),(int)this.getCenterY(),(int)moveDiagonally(g).getX(),(int)moveDiagonally(g).getY());
-		
 	}
 	
 	public void moveEnemyDiagonally() {
@@ -122,7 +112,6 @@ public class Enemy extends Entity {
 				}
 			}
 		}
-		//this is the one that is messed up
 	} else if (this.getCenterX() < target.getCenterX() && this.getCenterY() > target.getCenterY()) {
 		double angle = Math.atan2((this.getCenterY()-target.getCenterY()),(target.getCenterX()-this.getCenterX()));
 			for (double y = this.getCenterY(); y > target.getCenterY(); y -= 0.1) {
@@ -141,6 +130,5 @@ public class Enemy extends Entity {
 				}
 			}
 		} 
-		//System.out.println(this.getCenterX() + " " + this.getCenterY() + " target " + target.getCenterX() + " " + target.getCenterY());
 	}
 }

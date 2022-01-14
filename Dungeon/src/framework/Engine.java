@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -30,6 +33,8 @@ private static GameStateManager gameStateManager;
 		gameStateManager.stackState(new MainMenu(gameStateManager));
 		windowManager.addPanel(new GameScreen());
 		windowManager.addKeyListener(new Keyboard());
+		windowManager.addMouseListener(new ML());
+		windowManager.addMouseMotionListener(new MML());
 		windowManager.createWindow();
 		timer.start();
 	}
@@ -71,6 +76,46 @@ private static GameStateManager gameStateManager;
 		public void keyTyped(KeyEvent arg0) {}
 		
 	}
+	
+	private static class MML implements MouseMotionListener {
+		
+	
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			gameStateManager.mouseMoved(e);
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			
+		}
+		
+	}
+	
+	private static class ML implements MouseListener {
+		@Override
+		public void mousePressed(MouseEvent e) {
+			
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			
+		}
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			gameStateManager.mouseClicked(e);
+		}
+		
+		@Override
+		public void mouseExited(MouseEvent e) {}
+		
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+	}
+	
+	
 	
 
 }
