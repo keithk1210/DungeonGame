@@ -41,8 +41,6 @@ public class Player extends Entity {
 	public void move() {
 		super.move();
 		updateWorldAndRoomPosition();
-		
-		
 	}
 	
 	private void updateWorldAndRoomPosition() {

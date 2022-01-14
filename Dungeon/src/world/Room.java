@@ -129,4 +129,8 @@ public class Room {
 	public boolean hasEnemies() {
 		return enemies.size() > 0;
 	}
+	
+	public ArrayList<Enemy> getEnemies() {
+		return enemies;
+	}
 }

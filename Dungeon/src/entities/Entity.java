@@ -25,24 +25,24 @@ private static final long serialVersionUID = 1L;
 		this.down = false;
 		this.left = false;
 		this.right = false;
-		this.speed = 5;
+		this.speed = 4;
 	}
 	
 	public void move() {
 		if(up) {
-			super.y-=this.speed;
+			this.setCenterY((int)this.getCenterY()-speed);
 			this.facing = MathHelper.Direction.NORTH;
 		}
 		if(down) {
-			super.y+=this.speed;
+			this.setCenterY((int)this.getCenterY()+speed);
 			this.facing = MathHelper.Direction.SOUTH;
 		}
 		if(left) {
-			super.x-=this.speed;
+			this.setCenterX((int)this.getCenterX()-speed);
 			this.facing = MathHelper.Direction.WEST;
 		}
 		if(right) {
-			super.x+=this.speed;
+			this.setCenterX((int)this.getCenterX()+speed);
 			this.facing = MathHelper.Direction.EAST;
 		}
 	}
@@ -81,20 +81,7 @@ private static final long serialVersionUID = 1L;
 	public void setMovingRight(boolean right) {
 		this.right = right;
 	}
-	
-	public boolean isFacingUp() {
-		return this.up;
-	}
-	public boolean isFacingDown() {
-		return this.down;
-	}
-	public boolean isFacingLeft() {
-		return this.left;
-	}
-	public boolean isFacingRight() {
-		return this.right;
-	}
-	
+		
 	public void setCenterX(int x) {
 		super.x = x - super.width/2;
 	}

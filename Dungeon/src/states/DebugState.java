@@ -3,6 +3,7 @@ package states;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
+import entities.Enemy;
 import entities.Player;
 import gamestates.GameState;
 import gamestates.GameStateManager;
@@ -34,6 +35,9 @@ public class DebugState extends GameState {
 	@Override
 	protected void loop() {
 		this.player.move();
+		for (Enemy enemy : this.world.getRoomAt(player.getWorldX(), player.getWorldY()).getEnemies()) {
+			enemy.move();
+		}
 		this.collisions();
 	}
 	

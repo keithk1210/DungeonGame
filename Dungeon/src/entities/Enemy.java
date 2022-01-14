@@ -1,6 +1,7 @@
 package entities;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 import javafx.scene.shape.Line;
@@ -14,15 +15,47 @@ public class Enemy extends Entity {
 	
 	static final long serialVersionUID = 1L;
 	private Player target;
+	private final static double ERROR = .5;
 	
 	public Enemy(Player _target) {
-		super(MathHelper.randomInt(1, Resources.WIDTH_IN_TILES-1),(MathHelper.randomInt(1, Resources.HEIGHT_IN_TILES-1)));
+		//super(MathHelper.randomInt(1, Resources.WIDTH_IN_TILES-1),(MathHelper.randomInt(1, Resources.HEIGHT_IN_TILES-1)));
+		super(Resources.WIDTH_IN_TILES-2,Resources.HEIGHT_IN_TILES-2);
 		target = _target;
 	}
 	
 	@Override
 	public void move() {
-		
+		if (this.getCenterX() == target.getCenterX()) {
+			if (this.getCenterY() > target.getCenterY()) {
+				this.up = true;
+				this.down = false;
+				this.left = false;
+				this.right = false;
+				super.move();
+			} else {
+				this.up = false;
+				this.down = true;
+				this.left = false;
+				this.right = false;
+				super.move();
+			}
+		} else if (this.getCenterY() == target.getCenterY()) {
+			if (this.getCenterX() > target.getCenterX()) {
+				this.up = false;
+				this.down = false;
+				this.left = true;
+				this.right = false;
+				super.move();
+			} else {
+				this.up = false;
+				this.down = false;
+				this.left = false;
+				this.right = true;
+				super.move();
+			}
+		} else {
+			moveEnemyDiagonally();
+		}
 	}
 	
 	public void render(Graphics g) {
@@ -32,49 +65,82 @@ public class Enemy extends Entity {
 	}
 	
 	public void drawLines(Graphics g) {
-		//g.setColor(Color.white);
-		//Line north = new Line((double)0,(double)Resources.MIDDLE_SCREEN_Y,(double)Resources.SCREEN_WIDTH,(double)Resources.MIDDLE_SCREEN_Y);
-		/*
-		if (getReferencePoint() != null)
-			g.drawLine((int)this.getCenterX(),(int)this.getCenterY(), getReferencePoint().getX(), getReferencePoint().getY());
-		*/
-		Line line1 = new Line((double)0,(double)Resources.MIDDLE_SCREEN_Y,(double)Resources.SCREEN_WIDTH,(double)Resources.MIDDLE_SCREEN_Y);
-		Line line2 = new Line((double)Resources.MIDDLE_SCREEN_X,(double)0,(double)Resources.MIDDLE_SCREEN_X,(double)Resources.SCREEN_HEIGHT);
-		Shape shape = line1.intersect(line1,line2);
-		System.out.println(shape.layoutXProperty() + " " + shape.layoutYProperty());
-	}
-	
-	public enum Quadrant {
-		I(Resources.MIDDLE_SCREEN_X,Resources.SCREEN_WIDTH,0,Resources.MIDDLE_SCREEN_Y, new Coord(Resources.SCREEN_WIDTH,0)),
-		II(0,Resources.MIDDLE_SCREEN_X, 0,Resources.MIDDLE_SCREEN_Y, new Coord(0,0)),
-		III(0, Resources.MIDDLE_SCREEN_X, Resources.MIDDLE_SCREEN_Y,Resources.SCREEN_HEIGHT, new Coord(0,Resources.SCREEN_HEIGHT)),
-		IV(Resources.MIDDLE_SCREEN_X, Resources.SCREEN_WIDTH, Resources.MIDDLE_SCREEN_Y,Resources.SCREEN_HEIGHT, new Coord(Resources.SCREEN_WIDTH, Resources.SCREEN_HEIGHT));
+		g.setColor(Color.white);
+		g.drawLine((int)this.getCenterX(),(int)this.getCenterY(),(int)target.getCenterX(),(int)target.getCenterY());
+		//g.drawLine((int)this.getCenterX(),(int)this.getCenterY(),(int)moveDiagonally(g).getX(),(int)this.getCenterY());
+		//g.drawLine((int)moveDiagonally(g).getX(),(int)this.getCenterY(),(int)moveDiagonally(g).getX(),(int)moveDiagonally(g).getY());
 		
-		public int minX;
-		public int maxX;
-		public int minY;
-		public int maxY;
-		public Coord referencePoint;
-
-		private Quadrant(int minX, int maxX, int minY, int maxY, Coord referencePoint) {
-			this.minX = minX;
-			this.maxX = maxX;
-			this.minY = minY;
-			this.maxY = maxY;
-			this.referencePoint = referencePoint;
-		}
 	}
 	
-	public Coord getReferencePoint() {
-		for (Quadrant quadrant : Quadrant.values()) {
-			if (target.getCenterX() > quadrant.minX && target.getCenterX() < quadrant.maxX && target.getCenterY() > quadrant.minY && target.getCenterY() < quadrant.maxY) {
-				return quadrant.referencePoint;
+	public void moveEnemyDiagonally() {
+		if (this.getCenterX() > target.getCenterX() && this.getCenterY() > target.getCenterY()) {
+			double angle = Math.atan2((this.getCenterY()-target.getCenterY()),(this.getCenterX()-target.getCenterX()));
+			for (double y = this.getCenterY(); y > target.getCenterY(); y -= 0.1) {
+				for (double x = this.getCenterX(); x > target.getCenterX(); x -=0.1) {
+					double a = this.getCenterX()-x;
+					double b = this.getCenterY()-y;
+					if (Math.tan(angle) - (b/a) < ERROR) {
+						double c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+						if (Math.abs(c- this.speed) < ERROR) {
+							super.setCenterX((int)(this.getCenterX()-a));
+							super.setCenterY((int)(this.getCenterY() - b));
+							return;
+						}
+					}
+				}
+			}
+	} else if (this.getCenterX() > target.getCenterX() && this.getCenterY() < target.getCenterY()) {
+		double angle = Math.atan2((target.getCenterY()-this.getCenterY()),(this.getCenterX()-target.getCenterX()));
+		for (double y = this.getCenterY(); y < target.getCenterY(); y += 0.1) {
+			for (double x = this.getCenterX(); x > target.getCenterX(); x -=0.1) {
+				double a = this.getCenterX()-x;
+				double b = y-this.getCenterY();
+				if (Math.tan(angle) - (b/a) < ERROR) {
+					double c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+					if (Math.abs(c- this.speed) < ERROR) {
+						super.setCenterX((int)(this.getCenterX() - a));
+						super.setCenterY((int)(this.getCenterY() + b));
+						return;
+					}
+				}
 			}
 		}
-		return null;
-	}
-	
-	public double getSlope() {
-		return (target.getCenterY() - this .getCenterY())/(target.getCenterX() - this.getCenterX());
+		
+	} else if (this.getCenterX() < target.getCenterX() && this.getCenterY() < target.getCenterY()) {
+		double angle = Math.atan2(target.getCenterY()-this.getCenterY(),(target.getCenterX()-this.getCenterX()));
+		for (double y = this.getCenterY(); y < target.getCenterY(); y += 0.1) {
+			for (double x = this.getCenterX(); x < target.getCenterX(); x +=0.1) {
+				double a = x -this.getCenterX();
+				double b = y - this.getCenterY();
+				if (Math.tan(angle) - (b/a) < ERROR) {
+					double c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+					if (Math.abs(c - this.speed) < ERROR) {
+						super.setCenterX((int)(this.getCenterX() + a));
+						super.setCenterY((int)(this.getCenterY() + b));
+						return;
+					}
+				}
+			}
+		}
+		//this is the one that is messed up
+	} else if (this.getCenterX() < target.getCenterX() && this.getCenterY() > target.getCenterY()) {
+		double angle = Math.atan2((this.getCenterY()-target.getCenterY()),(target.getCenterX()-this.getCenterX()));
+			for (double y = this.getCenterY(); y > target.getCenterY(); y -= 0.1) {
+				for (double x = this.getCenterX(); x < target.getCenterX(); x +=0.1) {
+					double a = x-this.getCenterX();
+					double b = this.getCenterY()-y;
+					//System.out.println(a + " " + b);
+					if (Math.tan(angle) - (b/a) < ERROR) {
+						double c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+						if (Math.abs(c-this.speed) < ERROR) {
+							super.setCenterX((int)(this.getCenterX() + a));
+							super.setCenterY((int)(this.getCenterY() - b));
+							return;
+						}
+					}
+				}
+			}
+		} 
+		//System.out.println(this.getCenterX() + " " + this.getCenterY() + " target " + target.getCenterX() + " " + target.getCenterY());
 	}
 }
