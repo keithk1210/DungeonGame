@@ -1,5 +1,5 @@
 import framework.Engine;
-import resources.Loader;
+import framework.resources.Loader;
 
 public class DungeonGame {
 

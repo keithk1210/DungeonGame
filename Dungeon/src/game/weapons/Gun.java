@@ -1,13 +1,11 @@
 package game.weapons;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 
-import entities.Player;
-import game.projectiles.Bullet;
-import game.projectiles.Projectile;
-import world.World;
+import game.entities.Player;
+import game.entities.projectiles.Bullet;
+import game.entities.projectiles.Projectile;
 
 public class Gun extends Weapon {
 	
@@ -20,7 +18,7 @@ public class Gun extends Weapon {
 	}
 	
 	public void shoot(MouseEvent e) {
-		owner.getWorld().addProjectile(new Bullet((int)owner.getCenterX(),(int)owner.getCenterY(),owner,e));
+		owner.getWorld().getRoomAt(owner.getWorldX(),owner.getWorldY()).addProjectile(new Bullet((int)owner.getCenterX(),(int)owner.getCenterY(),owner,e));
 		x = e.getX();
 		y = e.getY();
 	}

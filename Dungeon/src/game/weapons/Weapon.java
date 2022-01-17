@@ -1,7 +1,6 @@
 package game.weapons;
 
-import entities.Player;
-import world.World;
+import game.entities.Player;
 
 public class Weapon {
 	

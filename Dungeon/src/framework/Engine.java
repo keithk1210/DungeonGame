@@ -12,9 +12,9 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import gamestates.GameStateManager;
-import gui.WindowManager;
-import states.MainMenu;
+import framework.gamestates.GameStateManager;
+import framework.gui.WindowManager;
+import game.states.MainMenu;
 
 public class Engine {
 	
