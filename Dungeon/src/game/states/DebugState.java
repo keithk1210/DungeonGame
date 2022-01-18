@@ -9,6 +9,7 @@ import framework.gamestates.GameState;
 import framework.gamestates.GameStateManager;
 import framework.gui.GUI;
 import framework.resources.Resources;
+import framework.utils.MathHelper.Direction;
 import game.entities.Enemy;
 import game.entities.Player;
 import game.entities.projectiles.Projectile;
@@ -32,8 +33,8 @@ public class DebugState extends GameState {
 		generator.generate();
 		world.setRooms(generator.getRooms());
 		this.player = new Player(world);
-		this.populator = new Populator(player,world);
-		populator.populate();
+		//dthis.populator = new Populator(player,world);
+		//populator.populate();
 	}
 
 	@Override
@@ -56,7 +57,6 @@ public class DebugState extends GameState {
 	
 	@Override
 	protected void mouseClicked(MouseEvent e) {
-		this.player.mouseClicked(e);
 	}
 	
 	private void killEntities() {
@@ -118,11 +118,11 @@ public class DebugState extends GameState {
 		case KeyEvent.VK_D:
 			this.player.setMovingRight(true);
 			break;
-			
 		case KeyEvent.VK_Q:
 			System.exit(0);
 			break;
 		}
+		player.keyPressed(keyCode);
 	}
 
 	@Override
@@ -141,6 +141,7 @@ public class DebugState extends GameState {
 			this.player.setMovingRight(false);
 			break;
 		}
+		player.keyReleased(keyCode);
 	}
 	
 }

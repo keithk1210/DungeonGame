@@ -2,10 +2,16 @@ package game.entities;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Stack;
 
 import framework.gui.GUI;
 import framework.resources.Resources;
+import framework.utils.MathHelper;
 import framework.utils.MathHelper.Direction;
 import framework.utils.Structs.Coord;
 import game.weapons.Gun;
@@ -20,6 +26,8 @@ public class Player extends Entity {
 	private int posYInWorld;
 	private Gun gun;
 	private World world;
+	private Stack<MathHelper.Direction> aimDirection;
+	private final Set<Integer> pressedKeys = new HashSet<>();
 	
 
 	
@@ -28,6 +36,8 @@ public class Player extends Entity {
 		super(Resources.CONJ_BLUE_FRONT, Resources.MIDDLE_X, Resources.MIDDLE_Y, Tile.SIZE);
 		world = _world;
 		gun = new Gun(this);
+		aimDirection = new Stack<MathHelper.Direction>();
+		//arrowKeys = new Key[] {new Key(false,KeyEvent.VK_UP), new Key(false,KeyEvent.VK_RIGHT),
 		speed = 10;
 		this.health = 20;
 		this.animationFrame = 0;
@@ -88,9 +98,6 @@ public class Player extends Entity {
 		
 	}
 	
-	public void mouseClicked(MouseEvent e) {
-		gun.shoot(e);
-	}
 	
 	private void updateWorldAndRoomPosition() {
 		if (this.x < 0) {
@@ -136,4 +143,102 @@ public class Player extends Entity {
 		return world;
 	}
 	
+	public void setAimDirection(MathHelper.Direction direction) {
+		if(!aimDirection.empty()) {
+			if (!aimDirection.peek().equals(direction)) {
+				this.aimDirection.push(direction);
+			}
+		} else {
+			this.aimDirection.push(direction);
+		}
+		System.out.println(aimDirection);
+	}
+	
+	
+	
+	public Coord[] getAimDirection() {
+		if (this.pressedKeys.size() > 1) {
+			MathHelper.Direction currentDir = aimDirection.pop();
+			MathHelper.Direction previousDir = aimDirection.peek();
+			if (previousDir.equals(currentDir.opposite)) {
+				aimDirection.push(currentDir);
+				return new Coord [] {new Coord(currentDir.dirX,currentDir.dirY)};
+			} else {
+				aimDirection.push(currentDir);
+				return new Coord [] {new Coord(currentDir.dirX,currentDir.dirY), new Coord(previousDir.dirX,previousDir.dirY)};
+			}
+		} else {
+			return new Coord [] {new Coord(aimDirection.peek().dirX,aimDirection.peek().dirY)};
+		}
+	}
+	
+
+	public void keyPressed(int keyCode) {
+		switch (keyCode) {
+			case KeyEvent.VK_UP:
+				this.setAimDirection(Direction.NORTH);
+				pressedKeys.add(keyCode);
+				break;
+			case KeyEvent.VK_DOWN:
+				this.setAimDirection(Direction.SOUTH);
+				pressedKeys.add(keyCode);
+				break;
+			case KeyEvent.VK_LEFT:
+				this.setAimDirection(Direction.WEST);
+				pressedKeys.add(keyCode);
+				break;
+			case KeyEvent.VK_RIGHT:
+				this.setAimDirection(Direction.EAST);
+				pressedKeys.add(keyCode);
+				break;
+			case KeyEvent.VK_SPACE:
+				this.gun.shoot();
+				break;
+		}
+		System.out.println(pressedKeys);
+	}
+	
+	public void keyReleased(int keyCode) {
+		removePressedKey(keyCode);
+		switch (keyCode) {
+		case KeyEvent.VK_UP:
+			this.removeAimDirectionStartingFromTopOfStack(Direction.NORTH);
+			break;
+		case KeyEvent.VK_DOWN:
+			this.removeAimDirectionStartingFromTopOfStack(Direction.SOUTH);
+			break;
+		case KeyEvent.VK_LEFT:
+			this.removeAimDirectionStartingFromTopOfStack(Direction.WEST);
+			break;
+		case KeyEvent.VK_RIGHT:
+			this.removeAimDirectionStartingFromTopOfStack(Direction.EAST);
+			break;
+		case KeyEvent.VK_SPACE:
+			this.gun.shoot();
+			break;
+	}
+	}
+	
+	private void removeAimDirectionStartingFromTopOfStack(MathHelper.Direction direction) {
+		for (int i = this.aimDirection.size() - 1; i >= 0; i--) {
+			if (aimDirection.elementAt(i).equals(direction)) {
+				aimDirection.remove(i);
+				return;
+			}
+		}
+	}
+	
+	private void removePressedKey(int keyCode) {
+		Iterator<Integer> iterator = pressedKeys.iterator();
+		while (iterator.hasNext()) {
+			if (Integer.valueOf(iterator.next()) == keyCode) {
+				iterator.remove();
+			}
+		}
+	}
+	
+	
+
 }
+
+
