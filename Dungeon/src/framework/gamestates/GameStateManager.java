@@ -45,24 +45,24 @@ public class GameStateManager {
 	}
 	
 	public void keyPressed(int keyCode) {
-		//try {
+		try {
 			this.states.peek().keyPressed(keyCode);
-			/*
+			
 		} catch(EmptyStackException e) {
 			System.err.println("[GameStateManager]: Error! GameState stack is empty!");
 			System.exit(-1);
 		}
-		*/
+		
 	}
 	
 	public void keyReleased(int keyCode) {
-		//try {
+		try {
 			this.states.peek().keyReleased(keyCode);
-		/*} catch(EmptyStackException e) {
+		} catch(EmptyStackException e) {
 			System.err.println("[GameStateManager]: Error! GameState stack is empty!");
 			System.exit(-1);
 		}
-		*/
+		
 	}
 	
 	public void mouseMoved(MouseEvent ev) {

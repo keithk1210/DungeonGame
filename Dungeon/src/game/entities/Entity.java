@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import framework.resources.Resources;
 import framework.utils.MathHelper;
 import framework.utils.MathHelper.Direction;
+import game.items.Item;
 import game.world.Tile;
 
 public class Entity extends Rectangle {
@@ -23,6 +24,7 @@ private static final long serialVersionUID = 1L;
 	protected int motionDelay;
 	protected int size;
 	private final byte initialID;
+	protected int invulTime;
 	private static final byte[] frames = new byte[] {0,1,0,2};
 	
 	protected int speed;
@@ -70,28 +72,6 @@ private static final long serialVersionUID = 1L;
 				this.setCenterX((int)this.getCenterX()+speed);
 				this.facing = Direction.EAST;
 			}
-			/*
-			if(up) {
-				this.setCenterY((int)this.getCenterY()-speed);
-				this.facing = MathHelper.Direction.NORTH;
-				this.entityID = (byte)(this.initialID + 9);
-			}
-			if(down) {
-				this.setCenterY((int)this.getCenterY()+speed);
-				this.facing = MathHelper.Direction.SOUTH;
-				this.entityID = (this.initialID);
-			}
-			if(left) {
-				this.setCenterX((int)this.getCenterX()-speed);
-				this.facing = MathHelper.Direction.WEST;
-				this.entityID = (byte)(this.initialID+3);
-			}
-			if(right) {
-				this.setCenterX((int)this.getCenterX()+speed);
-				this.facing = MathHelper.Direction.EAST;
-				this.entityID = (byte)(this.initialID+6);
-			}
-			*/
 		} else {
 			this.motionDelay--;
 			this.setCenterX((int)(this.getCenterX() + (this.launchDiretion.dirX * 10)));
@@ -137,9 +117,6 @@ private static final long serialVersionUID = 1L;
 			}
 		}
 		g.drawImage(Resources.TEXTURES.get(this.entityID + frames[animationFrame]), this.x, this.y, this.size, this.size, null);
-		//g.setColor(Color.red);
-		//g.drawLine((int)this.getBounds().getMinX(), 0, (int)this.getBounds().getMinX(), Resources.SCREEN_HEIGHT);
-		//g.drawLine((int)this.getBounds().getMaxX(), 0, (int)this.getBounds().getMaxX(), Resources.SCREEN_HEIGHT);
 	}
 	
 	
@@ -268,10 +245,21 @@ private static final long serialVersionUID = 1L;
 	public int getSpeed() {
 		return this.speed;
 	}
-
-	public void attack(Entity entity) {
-			entity.setHealth(entity.getHealth()-this.attack);
-			//System.out.println("health " + entity.getHealth());
+	
+	public void decrementInvulTime() {
+		if (this.invulTime != 0) {
+			this.invulTime = this.invulTime - 1;
+		}
 	}
 
+	public void attack(Entity entity) {
+		if (entity.invulTime == 0) {
+			entity.setHealth(entity.getHealth()-this.attack);
+			entity.invulTime = 5;
+			System.out.println(entity.invulTime);
+		}
+		
+	}
+
+	
 }

@@ -3,6 +3,9 @@ package game.entities;
 import framework.resources.Resources;
 import framework.utils.MathHelper;
 import framework.utils.MathHelper.Direction;
+import game.entities.items.ItemEntity;
+import game.inventory.Inventory;
+import game.inventory.InventorySlot;
 import game.world.Tile;
 
 public class Enemy extends Entity {
@@ -12,10 +15,12 @@ public class Enemy extends Entity {
 	private static final double ERROR = .5;
 	private int dx;
 	private int dy;
+	private Inventory inventory;
 
 	
-	public Enemy(Player _target) {
+	public Enemy(Player _target, Inventory inventory) {
 		super(Resources.SKELETON_FRONT, MathHelper.randomInt(1, Resources.WIDTH_IN_TILES-1)*Tile.SIZE,(MathHelper.randomInt(1, Resources.HEIGHT_IN_TILES-1))*Tile.SIZE,Tile.SIZE);
+		this.inventory = inventory;
 		target = _target;
 		this.health = 6;
 		this.attack = 5;
@@ -23,72 +28,6 @@ public class Enemy extends Entity {
 		this.dy = 0;
 		this.up = true;
 	}
-	
-	/*
-	@Override
-	public void move() {
-		if (this.getCenterX() == target.getCenterX()) {
-			if (this.getCenterY() > target.getCenterY()) {
-				this.up = true;
-				this.down = false;
-				this.left = false;
-				this.right = false;
-				super.move();
-			} else {
-				this.up = false;
-				this.down = true;
-				this.left = false;
-				this.right = false;
-				super.move();
-			}
-		} else if (this.getCenterY() == target.getCenterY()) {
-			if (this.getCenterX() > target.getCenterX()) {
-				this.up = false;
-				this.down = false;
-				this.left = true;
-				this.right = false;
-				super.move();
-			} else {
-				this.up = false;
-				this.down = false;
-				this.left = false;
-				this.right = true;
-				super.move();
-			}
-		} else {
-			moveEnemyDiagonally();
-		}
-	}
-	/*
-	
-	/*
-	public void render(Graphics g) {
-		g.setColor(Color.red);
-		g.fillRect((int)this.getX(),(int)this.getY(), Tile.SIZE, Tile.SIZE);
-		/*
-		g.setColor(debugLines(target));
-		g.drawLine((int)this.getBounds().getMinX(), 0, (int)this.getBounds().getMinX(), Resources.SCREEN_HEIGHT);
-		g.drawLine((int)this.getBounds().getMaxX(), 0, (int)this.getBounds().getMaxX(), Resources.SCREEN_HEIGHT);
-		g.drawLine(0, (int)this.getBounds().getMinY(), Resources.SCREEN_WIDTH ,(int)this.getBounds().getMinY());
-		g.drawLine(0, (int)this.getBounds().getMaxY(), Resources.SCREEN_WIDTH ,(int)this.getBounds().getMaxY());
-		*/
-	//}
-	
-	/*
-	private void updateSprite() {
-		if (Integer.signum(dx) == 1 && Integer.signum(dy) == 1) {
-			if (dy > dx) {
-				this.entityID = (byte)(this.initialID);
-			} else {
-				this.entityID = (byte)(this.initialID+6);
-			}
-		} else if (Integer.signum(dx) == -1 && Integer.signum(dy) == 1) {
-			if (dy > Math.abs(dx)) {
-				
-			}
-		}
-	}
-	*/
 	
 	@Override
 	public void move() {
@@ -260,4 +199,11 @@ public class Enemy extends Entity {
 			}
 		}
 	}
+	
+	public void dropItems() {
+		for (InventorySlot slot : this.inventory.getContents()) {
+			target.getWorld().getRoomAt(target.getWorldX(), target.getWorldY()).spawnItemEntity(new ItemEntity(slot.getItem().getId(),(int)this.getCenterX(),(int)this.getCenterY(),Tile.SIZE/2,slot));
+		}
+	}
+	
 }

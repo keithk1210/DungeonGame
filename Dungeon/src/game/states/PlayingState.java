@@ -29,7 +29,7 @@ public class PlayingState extends GameState {
 		this.generator = new LevelGenerator(world);
 		generator.generate();
 		world.setRooms(generator.getRooms());
-		this.player = new Player(world);
+		this.player = new Player(world, new Inventory());
 		this.populator = new Populator(player,world);
 		populator.populate();
 	}

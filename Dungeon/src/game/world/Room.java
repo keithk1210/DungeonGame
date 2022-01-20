@@ -9,6 +9,7 @@ import framework.resources.Resources;
 import framework.utils.MathHelper;
 import framework.utils.MathHelper.Direction;
 import game.entities.Enemy;
+import game.entities.items.ItemEntity;
 import game.entities.projectiles.Projectile;
 
 public class Room {
@@ -19,6 +20,7 @@ public class Room {
 	private Tile[][] tiles;
 	private ArrayList<Enemy> enemies;
 	private HashSet<Projectile> projectiles;
+	private HashSet<ItemEntity> itemEntities;
 	
 	public Room (int _posXInWorld, int _posYInWorld, MathHelper.Direction... _exits) {
 		posXInWorld = _posXInWorld;
@@ -27,6 +29,7 @@ public class Room {
 		exits = new HashSet<MathHelper.Direction>();
 		projectiles = new HashSet<Projectile>();
 		enemies = new ArrayList<Enemy>();
+		itemEntities = new HashSet<ItemEntity>();
 		for (MathHelper.Direction direction : _exits) {
 			this.exits.add(direction);
 		}
@@ -100,11 +103,16 @@ public class Room {
 			}
 			
 		}
-		if (this.hasEnemies()) {
-			for (Enemy enemy : enemies) {
-				enemy.render(g);
-			}
+		for (Projectile projectile : this.projectiles) {
+			projectile.render(g);
 		}
+		for (Enemy enemy: this.enemies) {
+			enemy.render(g);
+		}
+		for (ItemEntity itemEntity : this.getItemEntities()) {
+			itemEntity.render(g);
+		}
+		
 	}
 	
 	public int getX() {
@@ -126,7 +134,6 @@ public class Room {
 	}
 	
 	public void spawnEnemy(Enemy enemy) {
-		
 			enemies.add(enemy);
 	}
 	public boolean hasEnemies() {
@@ -156,15 +163,24 @@ public class Room {
 		 Iterator<Enemy> iterator = enemies.iterator();
 		 while(iterator.hasNext())
 		 {
-            if(iterator.next().getHealth() <= 0)
+			Enemy currentEnemy = iterator.next();
+            if(currentEnemy.getHealth() <= 0) {
+            	currentEnemy.dropItems();
             	iterator.remove();
+            }
 		 }
 	}
-	   
-	
-	
-	
+
 	public boolean hasProjectiles() {
 		return projectiles.size() > 0; 
+	}
+	public void spawnItemEntity(ItemEntity itemEntity) {
+		this.itemEntities.add(itemEntity);
+	}
+	public boolean hasItemEntites() {
+		return this.itemEntities.size() > 0;
+	}
+	public HashSet<ItemEntity> getItemEntities() {
+		return this.itemEntities;
 	}
 }

@@ -1,7 +1,5 @@
 package game.entities;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
@@ -14,6 +12,8 @@ import framework.resources.Resources;
 import framework.utils.MathHelper;
 import framework.utils.MathHelper.Direction;
 import framework.utils.Structs.Coord;
+import game.inventory.Inventory;
+import game.inventory.InventorySlot;
 import game.weapons.Gun;
 import game.world.Tile;
 import game.world.World;
@@ -24,6 +24,7 @@ public class Player extends Entity {
 	private int posXInWorld;
 	private int posYInWorld;
 	private Gun gun;
+	private Inventory inventory;
 	private World world;
 	private Stack<MathHelper.Direction> pressedKeyDirections;
 	private final Set<Integer> pressedKeys = new HashSet<>();
@@ -31,8 +32,9 @@ public class Player extends Entity {
 
 	
 	
-	public Player(World _world) {
+	public Player(World _world, Inventory inventory) {
 		super(Resources.CONJ_BLUE_FRONT, Resources.MIDDLE_X, Resources.MIDDLE_Y, Tile.SIZE);
+		this.inventory = inventory;
 		world = _world;
 		gun = new Gun(this);
 		pressedKeyDirections = new Stack<MathHelper.Direction>();
@@ -205,6 +207,9 @@ public class Player extends Entity {
 		}
 	}
 	
+	public void pickUpItem(InventorySlot inventorySlot) {
+		this.inventory.addItem(inventorySlot);
+	}
 }
 
 

@@ -75,6 +75,7 @@ public class Resources {
 	public static final byte SKELETON_BACK_LEFT = 25;
 	public static final byte SKELETON_BACK_RIGHT = 26;
 	public static final byte MAGIC_BULLET = 27;
+	public static final byte BOMB = 28;
 	//public static final byte BULLET = 16;
 	public static final Color WALL_COLOR = Color.black;
 	public static final Color PLAYER_COLOR = Color.blue;

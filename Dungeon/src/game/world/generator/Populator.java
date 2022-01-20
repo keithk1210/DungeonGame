@@ -4,6 +4,8 @@ import framework.resources.Resources;
 import framework.utils.MathHelper;
 import game.entities.Enemy;
 import game.entities.Player;
+import game.inventory.Inventory;
+import game.inventory.InventoryCreator;
 import game.world.World;
 
 public class Populator {
@@ -21,7 +23,8 @@ public class Populator {
 			for (int x = 0; x < world.getSize(); x++) {
 				if (!world.getRoomAt(x, y).hasEnemies()) {
 					if (MathHelper.randomInt(100) < Resources.PROB_OF_ENEMY) {
-						world.getRoomAt(x, y).spawnEnemy(new Enemy(player));
+						Inventory enemyInventory = InventoryCreator.newEnemyInventory();
+						world.getRoomAt(x, y).spawnEnemy(new Enemy(player,enemyInventory));
 					}
 				}
 			}

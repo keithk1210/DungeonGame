@@ -22,16 +22,5 @@ public class Gun extends Weapon {
 		if (owner.getPressedKeyDirections().length > 0) {
 			owner.getWorld().getRoomAt(owner.getWorldX(),owner.getWorldY()).addProjectile(new Bullet((int)owner.getCenterX(),(int)owner.getCenterY(),owner));
 		}
-		//x = e.getX();
-		//y = e.getY();
-	}
-	
-
-	
-	
-	
-	public void render(Graphics g) {
-		//g.setColor(Color.white);
-		//g.drawLine((int)owner.getCenterX(),(int) owner.getCenterY(), x, y);
 	}
 }
