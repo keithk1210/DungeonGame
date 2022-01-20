@@ -21,12 +21,11 @@ import game.world.World;
 public class Player extends Entity {
 	
 	private static final long serialVersionUID = 1L;
-	private static final byte[] frames = new byte[] {0,1,0,2};
 	private int posXInWorld;
 	private int posYInWorld;
 	private Gun gun;
 	private World world;
-	private Stack<MathHelper.Direction> aimDirection;
+	private Stack<MathHelper.Direction> pressedKeyDirections;
 	private final Set<Integer> pressedKeys = new HashSet<>();
 	
 
@@ -36,7 +35,7 @@ public class Player extends Entity {
 		super(Resources.CONJ_BLUE_FRONT, Resources.MIDDLE_X, Resources.MIDDLE_Y, Tile.SIZE);
 		world = _world;
 		gun = new Gun(this);
-		aimDirection = new Stack<MathHelper.Direction>();
+		pressedKeyDirections = new Stack<MathHelper.Direction>();
 		//arrowKeys = new Key[] {new Key(false,KeyEvent.VK_UP), new Key(false,KeyEvent.VK_RIGHT),
 		speed = 10;
 		this.health = 20;
@@ -55,49 +54,17 @@ public class Player extends Entity {
 		addCoordForGUI();
 	}
 	
-	@Override
-	public void render(Graphics g) {
-		if (up || down || left || right) {
-			animationDelay++;
-			if (animationDelay == 100) {
-				animationFrame++;
-				animationDelay = 0;
-				if (animationFrame > frames.length - 1) {
-					animationFrame = 0;
-				}
-			}
-		}
-		g.drawImage(Resources.TEXTURES.get(this.entityID + frames[animationFrame]), this.x, this.y, Tile.SIZE, Tile.SIZE, null);
-		g.setColor(Color.red);
-		g.drawLine((int)this.getBounds().getMinX(), 0, (int)this.getBounds().getMinX(), Resources.SCREEN_HEIGHT);
-		g.drawLine((int)this.getBounds().getMaxX(), 0, (int)this.getBounds().getMaxX(), Resources.SCREEN_HEIGHT);
-	}
+
 	
 	@Override
 	public void move() {
 		super.move();
 		updateWorldAndRoomPosition();
-		switch(this.facing) {
-			case NORTH:
-				this.entityID = Resources.CONJ_BLUE_BACK;
-				break;
-			case SOUTH:
-				this.entityID = Resources.CONJ_BLUE_FRONT;
-				break;
-			case EAST:
-				this.entityID = Resources.CONJ_BLUE_RIGHT;
-				break;
-			case WEST:
-				this.entityID = Resources.CONJ_BLUE_LEFT;
-				break;
-		}
-		
 	}
 	
 	public void mouseMoved(MouseEvent e) {
 		
 	}
-	
 	
 	private void updateWorldAndRoomPosition() {
 		if (this.x < 0) {
@@ -143,32 +110,35 @@ public class Player extends Entity {
 		return world;
 	}
 	
-	public void setAimDirection(MathHelper.Direction direction) {
-		if(!aimDirection.empty()) {
-			if (!aimDirection.peek().equals(direction)) {
-				this.aimDirection.push(direction);
+	public void setPressedKeyDirections(MathHelper.Direction direction) {
+		if(!pressedKeyDirections.empty()) {
+			if (!pressedKeyDirections.peek().equals(direction)) {
+				this.pressedKeyDirections.push(direction);
 			}
 		} else {
-			this.aimDirection.push(direction);
+			this.pressedKeyDirections.push(direction);
 		}
-		System.out.println(aimDirection);
 	}
 	
 	
 	
-	public Coord[] getAimDirection() {
+	public Coord[] getPressedKeyDirections() {
 		if (this.pressedKeys.size() > 1) {
-			MathHelper.Direction currentDir = aimDirection.pop();
-			MathHelper.Direction previousDir = aimDirection.peek();
-			if (previousDir.equals(currentDir.opposite)) {
-				aimDirection.push(currentDir);
+			MathHelper.Direction currentDir = pressedKeyDirections.pop();
+			MathHelper.Direction previousDir = pressedKeyDirections.peek();
+			if (previousDir.equals(currentDir.opposite) && pressedKeys.size() == 2) {
+				pressedKeyDirections.push(currentDir);
 				return new Coord [] {new Coord(currentDir.dirX,currentDir.dirY)};
-			} else {
-				aimDirection.push(currentDir);
+			} else if (previousDir.equals(currentDir.opposite) && pressedKeys.size() > 2) {
+				pressedKeyDirections.push(currentDir);
+				return new Coord[] {new Coord(currentDir.dirX,currentDir.dirY), new Coord (pressedKeyDirections.get(0).dirX,pressedKeyDirections.get(0).dirY)};
+			}
+			else {
+				pressedKeyDirections.push(currentDir);
 				return new Coord [] {new Coord(currentDir.dirX,currentDir.dirY), new Coord(previousDir.dirX,previousDir.dirY)};
 			}
 		} else {
-			return new Coord [] {new Coord(aimDirection.peek().dirX,aimDirection.peek().dirY)};
+			return new Coord [] {new Coord(pressedKeyDirections.peek().dirX,pressedKeyDirections.peek().dirY)};
 		}
 	}
 	
@@ -176,53 +146,51 @@ public class Player extends Entity {
 	public void keyPressed(int keyCode) {
 		switch (keyCode) {
 			case KeyEvent.VK_UP:
-				this.setAimDirection(Direction.NORTH);
+				this.setPressedKeyDirections(Direction.NORTH);
 				pressedKeys.add(keyCode);
 				break;
 			case KeyEvent.VK_DOWN:
-				this.setAimDirection(Direction.SOUTH);
+				this.setPressedKeyDirections(Direction.SOUTH);
 				pressedKeys.add(keyCode);
 				break;
 			case KeyEvent.VK_LEFT:
-				this.setAimDirection(Direction.WEST);
+				this.setPressedKeyDirections(Direction.WEST);
 				pressedKeys.add(keyCode);
 				break;
 			case KeyEvent.VK_RIGHT:
-				this.setAimDirection(Direction.EAST);
+				this.setPressedKeyDirections(Direction.EAST);
 				pressedKeys.add(keyCode);
 				break;
 			case KeyEvent.VK_SPACE:
-				this.gun.shoot();
+				if (!this.pressedKeyDirections.empty()) {
+					this.gun.shoot();
+				}
 				break;
 		}
-		System.out.println(pressedKeys);
 	}
 	
 	public void keyReleased(int keyCode) {
 		removePressedKey(keyCode);
 		switch (keyCode) {
 		case KeyEvent.VK_UP:
-			this.removeAimDirectionStartingFromTopOfStack(Direction.NORTH);
+			this.removePressedKeyDirectoinStartingFromTopOfStack(Direction.NORTH);
 			break;
 		case KeyEvent.VK_DOWN:
-			this.removeAimDirectionStartingFromTopOfStack(Direction.SOUTH);
+			this.removePressedKeyDirectoinStartingFromTopOfStack(Direction.SOUTH);
 			break;
 		case KeyEvent.VK_LEFT:
-			this.removeAimDirectionStartingFromTopOfStack(Direction.WEST);
+			this.removePressedKeyDirectoinStartingFromTopOfStack(Direction.WEST);
 			break;
 		case KeyEvent.VK_RIGHT:
-			this.removeAimDirectionStartingFromTopOfStack(Direction.EAST);
-			break;
-		case KeyEvent.VK_SPACE:
-			this.gun.shoot();
+			this.removePressedKeyDirectoinStartingFromTopOfStack(Direction.EAST);
 			break;
 	}
 	}
 	
-	private void removeAimDirectionStartingFromTopOfStack(MathHelper.Direction direction) {
-		for (int i = this.aimDirection.size() - 1; i >= 0; i--) {
-			if (aimDirection.elementAt(i).equals(direction)) {
-				aimDirection.remove(i);
+	private void removePressedKeyDirectoinStartingFromTopOfStack(MathHelper.Direction direction) {
+		for (int i = this.pressedKeyDirections.size() - 1; i >= 0; i--) {
+			if (pressedKeyDirections.elementAt(i).equals(direction)) {
+				pressedKeyDirections.remove(i);
 				return;
 			}
 		}
@@ -237,8 +205,6 @@ public class Player extends Entity {
 		}
 	}
 	
-	
-
 }
 
 

@@ -19,7 +19,7 @@ public class Gun extends Weapon {
 	}
 	
 	public void shoot() {
-		if (owner.getAimDirection().length > 0) {
+		if (owner.getPressedKeyDirections().length > 0) {
 			owner.getWorld().getRoomAt(owner.getWorldX(),owner.getWorldY()).addProjectile(new Bullet((int)owner.getCenterX(),(int)owner.getCenterY(),owner));
 		}
 		//x = e.getX();

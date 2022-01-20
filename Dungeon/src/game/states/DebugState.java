@@ -3,6 +3,7 @@ package game.states;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import framework.gamestates.GameState;
@@ -33,14 +34,15 @@ public class DebugState extends GameState {
 		generator.generate();
 		world.setRooms(generator.getRooms());
 		this.player = new Player(world);
-		//dthis.populator = new Populator(player,world);
-		//populator.populate();
+		this.populator = new Populator(player,world);
+		populator.populate();
 	}
 
 	@Override
 	protected void loop() {
 		this.player.move();
 		for (Enemy enemy : this.world.getRoomAt(player.getWorldX(), player.getWorldY()).getEnemies()) {
+			enemy.updateFacing();
 			enemy.move();
 		}
 		for (Projectile projectile:this.world.getRoomAt(this.player.getWorldX(), this.player.getWorldY()).getProjectiles()) {
@@ -82,13 +84,14 @@ public class DebugState extends GameState {
 				}
 			}
 		}
-		
+		Iterator<Projectile> iterator = currentRoom.getProjectiles().iterator();
 		for(Enemy enemy : currentRoom.getEnemies()) {
 			enemy.handleCollisionWithEntity(this.player);
-			for (Projectile projectile: currentRoom.getProjectiles()) {
-				if (enemy.contains(projectile.x,projectile.y)) {
-					currentRoom.removeProjectile(projectile);
-					projectile.attack(enemy);
+			while (iterator.hasNext()) {
+				Projectile currentProjectile = iterator.next();
+				if (enemy.contains(currentProjectile.getCenterX(),currentProjectile.getCenterY())) {
+					currentProjectile.attack(enemy);
+					iterator.remove();
 				}
 			}
 		}
@@ -100,6 +103,9 @@ public class DebugState extends GameState {
 		this.player.getGun().render(g);
 		for (Projectile projectile:this.world.getRoomAt(player.getWorldX(),player.getWorldY()).getProjectiles()) {
 			projectile.render(g);
+		}
+		for (Enemy enemy: this.world.getRoomAt(player.getWorldX(), player.getWorldY()).getEnemies()) {
+			enemy.render(g);
 		}
 		GUI.render(g, this.player, this.world);
 	}
@@ -143,5 +149,7 @@ public class DebugState extends GameState {
 		}
 		player.keyReleased(keyCode);
 	}
-	
+		
 }
+	
+

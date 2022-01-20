@@ -62,8 +62,20 @@ public class Resources {
 	public static final byte CONJ_BLUE_BACK = 12;
 	public static final byte CONJ_BLUE_BACK_LEFT = 13;
 	public static final byte CONJ_BLUE_BACK_RIGHT = 14;
-	public static final byte ENEMY = 15;
-	public static final byte BULLET = 16;
+	public static final byte SKELETON_FRONT = 15;
+	public static final byte SKELETON_FRONT_LEFT = 16;
+	public static final byte SKELETON_FRONT_RIGHT = 17;
+	public static final byte SKELETON_LEFT = 18;
+	public static final byte SKELETON_LEFT_LEFT = 19;
+	public static final byte SKELETON_LEFT_RIGHT = 20;
+	public static final byte SKELETON_RIGHT = 21;
+	public static final byte SKELETON_RIGHT_LEFT = 22;
+	public static final byte SKELETON_RIGHT_RIGHT = 23;
+	public static final byte SKELETON_BACK = 24;
+	public static final byte SKELETON_BACK_LEFT = 25;
+	public static final byte SKELETON_BACK_RIGHT = 26;
+	public static final byte MAGIC_BULLET = 27;
+	//public static final byte BULLET = 16;
 	public static final Color WALL_COLOR = Color.black;
 	public static final Color PLAYER_COLOR = Color.blue;
 	
