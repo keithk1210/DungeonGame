@@ -6,9 +6,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import framework.resources.Resources;
+import framework.resources.TextureID;
 import framework.utils.MathHelper;
 import framework.utils.MathHelper.Direction;
 import game.entities.Enemy;
+import game.entities.Entity;
 import game.entities.items.ItemEntity;
 import game.entities.projectiles.Projectile;
 
@@ -18,18 +20,15 @@ public class Room {
 	private int posXInWorld;
 	private int posYInWorld;
 	private Tile[][] tiles;
-	private ArrayList<Enemy> enemies;
+	private HashSet<Entity> entities;
 	private HashSet<Projectile> projectiles;
-	private HashSet<ItemEntity> itemEntities;
 	
 	public Room (int _posXInWorld, int _posYInWorld, MathHelper.Direction... _exits) {
 		posXInWorld = _posXInWorld;
 		posYInWorld = _posYInWorld;
 		tiles = new Tile[Resources.WIDTH_IN_TILES][Resources.HEIGHT_IN_TILES];
 		exits = new HashSet<MathHelper.Direction>();
-		projectiles = new HashSet<Projectile>();
-		enemies = new ArrayList<Enemy>();
-		itemEntities = new HashSet<ItemEntity>();
+		this.entities = new HashSet<Entity>();
 		for (MathHelper.Direction direction : _exits) {
 			this.exits.add(direction);
 		}
@@ -37,9 +36,7 @@ public class Room {
 		setWallTiles();
 	}
 	
-	public Room() {
-		
-	}
+	public Room() {}
 	
 	private void setFloorTiles() {
 		for (int y = 0; y < Resources.WIDTH_IN_TILES; y++) {
@@ -89,28 +86,22 @@ public class Room {
 			for(int x = 0; x < tiles[y].length; x++) {
 				if (tiles[y][x].getId() == Resources.WALL) {
 					if (((x == 0 || x == tiles[y].length - 1) && y == Resources.MIDDLE_TILE_Y - 1) && tiles[y+1][x].getId() == Resources.DOOR) {
-						g.drawImage(Resources.TEXTURES.get(Resources.BROWN_WALL_FRONT_FACE), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
+						g.drawImage(Resources.TEXTURES.get(TextureID.BROWN_WALL_FRONT_FACE), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
 						continue;
 					} else if  ((x == 0 || x == tiles[y].length - 1) && y != tiles.length - 1) {
-						g.drawImage(Resources.TEXTURES.get(Resources.BROWN_WALL_ABOVE), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
+						g.drawImage(Resources.TEXTURES.get(TextureID.BROWN_WALL_ABOVE), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
 						continue;
 					} else {
-						g.drawImage(Resources.TEXTURES.get(Resources.BROWN_WALL_FRONT_FACE), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
+						g.drawImage(Resources.TEXTURES.get(TextureID.BROWN_WALL_FRONT_FACE), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
 					}
 				} else if (tiles[y][x].getId() == Resources.FLOOR || tiles[y][x].getId() == Resources.DOOR) {
-					g.drawImage(Resources.TEXTURES.get(Resources.BROWN_FLOOR), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
+					g.drawImage(Resources.TEXTURES.get(TextureID.BROWN_FLOOR), x * Tile.SIZE, y * Tile.SIZE, Tile.SIZE, Tile.SIZE, null);
 				}
 			}
 			
 		}
-		for (Projectile projectile : this.projectiles) {
-			projectile.render(g);
-		}
-		for (Enemy enemy: this.enemies) {
-			enemy.render(g);
-		}
-		for (ItemEntity itemEntity : this.getItemEntities()) {
-			itemEntity.render(g);
+		for (Entity entity : this.entities) {
+			entity.render(g);
 		}
 		
 	}
@@ -133,54 +124,90 @@ public class Room {
 		exits.remove(d);
 	}
 	
-	public void spawnEnemy(Enemy enemy) {
-			enemies.add(enemy);
-	}
-	public boolean hasEnemies() {
-		return enemies.size() > 0;
+	public void spawnEntity(Entity entity) {
+		this.entities.add(entity);
 	}
 	
-	public ArrayList<Enemy> getEnemies() {
-		return enemies;
+	public void spawnProjectile(Projectile projectile) {
+		this.entities.add(projectile);
+		this.projectiles.add(projectile);
+	}
+	
+	public HashSet<Entity> getEntities() {
+		return this.entities;
 	}
 	
 	public HashSet<Projectile> getProjectiles() {
+		HashSet<Projectile> projectiles = new HashSet<Projectile>();
+		for (Entity entity : this.entities) {
+			if (entity instanceof Projectile) {
+				Projectile projectile = (Projectile) entity;
+				projectiles.add(projectile);
+			}
+		}
 		return projectiles;
 	}
-	public void addProjectile(Projectile projectile) {
-		projectiles.add(projectile);
+	
+	public HashSet<Enemy> getEnemies() {
+		HashSet<Enemy> enemies = new HashSet<Enemy>();
+		for (Entity entity : this.entities) {
+			if (entity instanceof Enemy) {
+				Enemy enemy = (Enemy) entity;
+				enemies.add(enemy);
+			}
+		}
+		return enemies;
 	}
-	public void removeProjectile(Projectile projectile) {
-		 Iterator<Projectile> iterator = projectiles.iterator();
+	public boolean hasEnemies() {
+		for (Entity e : this.entities) {
+			if (e instanceof Enemy) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void removeEntity(Entity entity) {
+		 Iterator<Entity> iterator = this.entities.iterator();
 	        while(iterator.hasNext())
 	        {
-	            if(iterator.next().equals(projectile))
+	            if(iterator.next().equals(entity))
 	                iterator.remove();
 	        }
 	}
 	
 	public void killEnemies() {
-		 Iterator<Enemy> iterator = enemies.iterator();
-		 while(iterator.hasNext())
-		 {
-			Enemy currentEnemy = iterator.next();
-            if(currentEnemy.getHealth() <= 0) {
-            	currentEnemy.dropItems();
-            	iterator.remove();
+		HashSet<Enemy> toKill = new HashSet<Enemy>();
+		Iterator<Entity> iterator = this.entities.iterator();
+		while (iterator.hasNext()) {
+			Entity entity = iterator.next();
+            if(entity instanceof Enemy) {
+            	if (entity.getHealth() <= 0) {
+	            	Enemy enemy = (Enemy) entity;
+	            	iterator.remove();
+	            	toKill.add(enemy);
+            	}
             }
-		 }
+		}
+		for (Enemy enemy : toKill) {
+			enemy.dropItems();
+		}
 	}
 
 	public boolean hasProjectiles() {
-		return projectiles.size() > 0; 
-	}
-	public void spawnItemEntity(ItemEntity itemEntity) {
-		this.itemEntities.add(itemEntity);
+		for (Entity e : this.entities) {
+			if (e instanceof Projectile) {
+				return true;
+			}
+		}
+		return false;
 	}
 	public boolean hasItemEntites() {
-		return this.itemEntities.size() > 0;
-	}
-	public HashSet<ItemEntity> getItemEntities() {
-		return this.itemEntities;
+		for (Entity e : this.entities) {
+			if (e instanceof ItemEntity) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

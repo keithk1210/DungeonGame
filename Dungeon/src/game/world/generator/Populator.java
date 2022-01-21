@@ -23,8 +23,9 @@ public class Populator {
 			for (int x = 0; x < world.getSize(); x++) {
 				if (!world.getRoomAt(x, y).hasEnemies()) {
 					if (MathHelper.randomInt(100) < Resources.PROB_OF_ENEMY) {
-						Inventory enemyInventory = InventoryCreator.newEnemyInventory();
-						world.getRoomAt(x, y).spawnEnemy(new Enemy(player,enemyInventory));
+						InventoryCreator inventoryCreator = new InventoryCreator();
+						Enemy enemy = new Enemy(player,this.world,inventoryCreator.newEnemyInventory());
+						world.getRoomAt(x, y).spawnEntity(enemy);
 					}
 				}
 			}

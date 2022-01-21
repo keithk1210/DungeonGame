@@ -91,6 +91,10 @@ public class GUI {
 			}
 		}
 	}
+	
+	public void resetGUI() {
+		this.lines.clear();
+	}
 	private static void drawRoomOnMap(Graphics g, World world, int x, int y) {
 		for (int j = 0; j < Resources.MAP_ROOM_SIZE; j++) {
 			for (int i = 0; i < Resources.MAP_ROOM_SIZE; i++) {

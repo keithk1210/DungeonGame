@@ -10,6 +10,7 @@ import framework.gamestates.GameStateManager;
 import framework.gui.GUI;
 import framework.resources.Resources;
 import game.entities.Enemy;
+import game.entities.Entity;
 import game.entities.Player;
 import game.entities.items.ItemEntity;
 import game.entities.projectiles.Projectile;
@@ -72,11 +73,23 @@ public class DebugState extends GameState {
 	
 	private void collisions() {
 		Room currentRoom = this.world.getRoomAt(player.getWorldX(), player.getWorldY());
-		
+		Iterator<Entity> entityIterator = currentRoom.getEntities().iterator();
+		Iterator<Projectile> projectileIterator = currentRoom.getProjectiles().iterator();
 		//tile collisions
 		for(int i=0;i<Resources.WIDTH_IN_TILES;i++) {
 			for(int j=0;j<Resources.HEIGHT_IN_TILES;j++) {
 				this.player.handleCollisionWithTile(currentRoom.getTileAt(i, j));
+				while (entityIterator.hasNext()) {
+					Entity currentEntity = entityIterator.next();
+					if (currentEntity instanceof Enemy) {
+						currentEntity.handleCollisionWithTile(currentRoom.getTileAt(i, j));
+					}
+					if (currentEntity instanceof Projectile) {
+						entityIterator.remove();
+					}
+				}
+				
+				/*
 				if (currentRoom.hasEnemies()) {
 					for(Enemy enemy : currentRoom.getEnemies()) {
 						enemy.handleCollisionWithTile(currentRoom.getTileAt(i, j));
@@ -91,10 +104,31 @@ public class DebugState extends GameState {
 					}
 				}
 				}
+				/*/
 			}
 		}
+		while (entityIterator.hasNext()) {
+			Entity currentEntity = entityIterator.next();
+			if (currentEntity instanceof Enemy) {
+				currentEntity.handleCollisionWithEntity(this.player);
+				while (projectileIterator.hasNext()) {
+					Projectile currentProjectile = projectileIterator.next();
+					if (currentEntity.contains(currentProjectile.getCenterX(),currentProjectile.getCenterY())) {
+						currentProjectile.attack(currentEntity);
+						projectileIterator.remove();
+					}
+				}
+			}
+			if (currentEntity instanceof ItemEntity) {
+				ItemEntity currentItemEntity = (ItemEntity) currentEntity;
+				if (this.player.contains(currentEntity.getCenterX(),currentEntity.getCenterY())) {
+					this.player.pickUpItem(currentItemEntity.getInventorySlot());
+					entityIterator.remove();
+				}
+			}
+		}
+		/*
 		//attacks player and handles projectiles
-		Iterator<Projectile> projectileIterator = currentRoom.getProjectiles().iterator();
 		for(Enemy enemy : currentRoom.getEnemies()) {
 			enemy.handleCollisionWithEntity(this.player);
 			while (projectileIterator.hasNext()) {
@@ -114,8 +148,7 @@ public class DebugState extends GameState {
 				itemEntityIterator.remove();
 			}
 		}
-		
-		
+		*/
 	}
 	@Override 
 	protected void render(Graphics g) {
@@ -144,7 +177,7 @@ public class DebugState extends GameState {
 			System.exit(0);
 			break;
 		}
-		player.keyPressed(keyCode);
+		this.player.getGun().keyPressed(keyCode);
 	}
 
 	@Override
@@ -163,7 +196,7 @@ public class DebugState extends GameState {
 			this.player.setMovingRight(false);
 			break;
 		}
-		player.keyReleased(keyCode);
+		this.player.getGun().keyReleased(keyCode);
 	}
 		
 }

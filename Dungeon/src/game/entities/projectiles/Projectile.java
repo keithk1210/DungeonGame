@@ -1,12 +1,10 @@
 package game.entities.projectiles;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
-import framework.resources.Resources;
+import framework.resources.TextureID;
 import framework.utils.Structs.Coord;
 import game.entities.Entity;
 import game.entities.Player;
+import game.world.World;
 
 public class Projectile extends Entity {
 	
@@ -22,8 +20,8 @@ public class Projectile extends Entity {
 	private static final double ERROR = .01;
 	private static final double INCREMENT = .03;
 	
-	public Projectile(int screenX, int screenY, Player p) {
-		super(Resources.MAGIC_BULLET, screenX ,screenY,25);
+	public Projectile(int screenX, int screenY, Player p, World world) {
+		super(TextureID.MAGIC_BULLET, screenX ,screenY,25, world);
 		initialX = (int)p.getCenterX();
 		initialY = (int)p.getCenterY();
 		//targetX = e.getX();
@@ -41,8 +39,8 @@ public class Projectile extends Entity {
 	private void calculateDXandDY2() {
 		dx = 0;
 		dy = 0;
-		if (shooter.getPressedKeyDirections().length != 0) {
-			for (Coord coord: shooter.getPressedKeyDirections()) {
+		if (this.shooter.getGun().getPressedKeyDirections().length != 0) {
+			for (Coord coord: this.shooter.getGun().getPressedKeyDirections()) {
 				this.dx += coord.getX() * speed;
 				this.dy += coord.getY() * speed;
 			}

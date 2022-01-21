@@ -7,8 +7,9 @@ import java.awt.Rectangle;
 import framework.resources.Resources;
 import framework.utils.MathHelper;
 import framework.utils.MathHelper.Direction;
-import game.items.Item;
+import game.inventory.Inventory;
 import game.world.Tile;
+import game.world.World;
 
 public class Entity extends Rectangle {
 	
@@ -26,31 +27,34 @@ private static final long serialVersionUID = 1L;
 	private final byte initialID;
 	protected int invulTime;
 	private static final byte[] frames = new byte[] {0,1,0,2};
-	
+	protected World world;
 	protected int speed;
 	protected int health;
 	protected int attack;
+	protected int posXInWorld;
+	protected int posYInWorld;
+	protected Inventory inventory;
 	
 	protected MathHelper.Direction facing;
 	protected MathHelper.Direction launchDiretion;
 	
-	protected byte entityID;
+	protected byte textureID;
 	
 	private static final int ERROR = 15;
 	
-	public Entity(byte _entityID, int posXinRoom, int posYinRoom, int _size) {
+	public Entity(byte textureID, int posXinRoom, int posYinRoom, int _size, World world) {
 		super(posXinRoom, posYinRoom, _size, _size);
+		this.world = world;
 		this.size = _size;
-		this.entityID = _entityID;
-		this.initialID = this.entityID;
+		this.textureID = textureID;
+		this.initialID = this.textureID;
 		this.up = false;
 		this.down = false;
 		this.left = false;
 		this.right = false;
-		this.facing = Direction.SOUTH;
 		this.speed = 4;
-		
 		this.motionDelay = 0;
+		this.facing = Direction.SOUTH;
 	}
 	
 	public void move() {
@@ -83,23 +87,44 @@ private static final long serialVersionUID = 1L;
 		this.facing = direction;
 	}
 	
-	public void updateFacing() {
-		
+	public void updateFacing() {}
+	
+	private void updateWorldAndRoomPosition() {
+		if (this.x < 0) {
+			this.x = Resources.SCREEN_WIDTH - Tile.SIZE;
+			posXInWorld--;
+		} else if (this.x >= Resources.SCREEN_WIDTH) {
+			this.x = 0;
+			posXInWorld++;
+		} else if (this.y < 0) {
+			this.y = Resources.SCREEN_HEIGHT - Tile.SIZE;
+			posYInWorld--;
+		} else if (this.y >= Resources.SCREEN_HEIGHT) {
+			this.y = 0;
+			posYInWorld++;
+		}
+	}
+	
+	public int getWorldX() {
+		return posXInWorld;
+	}
+	public int getWorldY() {
+		return posYInWorld;
 	}
 	
 	protected void updateSprite() {
 		switch (this.facing) {
 			case NORTH:
-				this.entityID = (byte)(this.initialID + 9);
+				this.textureID = (byte)(this.initialID + 9);
 				break;
 			case SOUTH:
-				this.entityID = (this.initialID);
+				this.textureID = (this.initialID);
 				break;
 			case EAST:
-				this.entityID = (byte)(this.initialID+6);
+				this.textureID = (byte)(this.initialID+6);
 				break;
 			case WEST:
-				this.entityID = (byte)(this.initialID+3);
+				this.textureID = (byte)(this.initialID+3);
 				break;
 		}
 	}
@@ -116,7 +141,7 @@ private static final long serialVersionUID = 1L;
 				}
 			}
 		}
-		g.drawImage(Resources.TEXTURES.get(this.entityID + frames[animationFrame]), this.x, this.y, this.size, this.size, null);
+		g.drawImage(Resources.TEXTURES.get(this.textureID + frames[animationFrame]), this.x, this.y, this.size, this.size, null);
 	}
 	
 	
@@ -246,6 +271,10 @@ private static final long serialVersionUID = 1L;
 		return this.speed;
 	}
 	
+	public World getWorld() {
+		return world;
+	}
+	
 	public void decrementInvulTime() {
 		if (this.invulTime != 0) {
 			this.invulTime = this.invulTime - 1;
@@ -256,10 +285,14 @@ private static final long serialVersionUID = 1L;
 		if (entity.invulTime == 0) {
 			entity.setHealth(entity.getHealth()-this.attack);
 			entity.invulTime = 5;
-			System.out.println(entity.invulTime);
 		}
 		
 	}
+	
+	public void useItem() {
+	}
+	
+	
 
 	
 }

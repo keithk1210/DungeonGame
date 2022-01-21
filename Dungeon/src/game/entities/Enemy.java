@@ -1,12 +1,15 @@
 package game.entities;
 
+import java.util.HashSet;
+
 import framework.resources.Resources;
+import framework.resources.TextureID;
 import framework.utils.MathHelper;
 import framework.utils.MathHelper.Direction;
 import game.entities.items.ItemEntity;
 import game.inventory.Inventory;
-import game.inventory.InventorySlot;
 import game.world.Tile;
+import game.world.World;
 
 public class Enemy extends Entity {
 	
@@ -18,10 +21,11 @@ public class Enemy extends Entity {
 	private Inventory inventory;
 
 	
-	public Enemy(Player _target, Inventory inventory) {
-		super(Resources.SKELETON_FRONT, MathHelper.randomInt(1, Resources.WIDTH_IN_TILES-1)*Tile.SIZE,(MathHelper.randomInt(1, Resources.HEIGHT_IN_TILES-1))*Tile.SIZE,Tile.SIZE);
-		this.inventory = inventory;
+	public Enemy(Player _target, World world, Inventory inventory) {
+		super(TextureID.SKELETON_FRONT, MathHelper.randomInt(1, Resources.WIDTH_IN_TILES-1)*Tile.SIZE,(MathHelper.randomInt(1, Resources.HEIGHT_IN_TILES-1))*Tile.SIZE,Tile.SIZE,world);
 		target = _target;
+		this.inventory = inventory;
+		inventory.setOwner(this);
 		this.health = 6;
 		this.attack = 5;
 		this.dx = 0;
@@ -201,8 +205,22 @@ public class Enemy extends Entity {
 	}
 	
 	public void dropItems() {
-		for (InventorySlot slot : this.inventory.getContents()) {
-			target.getWorld().getRoomAt(target.getWorldX(), target.getWorldY()).spawnItemEntity(new ItemEntity(slot.getItem().getId(),(int)this.getCenterX(),(int)this.getCenterY(),Tile.SIZE/2,slot));
+		for (int y = 0; y < this.inventory.getContents().length; y++) {
+			for (int x = 0; x < this.inventory.getContents()[y].length; x++) {
+				if (this.inventory.getContents()[y][x] != null) {
+					System.out.println(this.inventory.getContents()[y][x].getItem().getItemID());
+				}
+			}
+		}
+		if (this.inventory != null) {
+		for (int y = 0; y < this.inventory.getContents().length; y++) {
+			for (int x = 0; x < this.inventory.getContents()[y].length; x++) {
+				if (this.inventory.getContents()[y][x] != null) {
+				
+					this.target.getWorld().getRoomAt(target.getWorldX(), target.getWorldY()).spawnEntity(new ItemEntity(this.inventory.getContents()[y][x].getItem().getTextureID(),(int)this.getCenterX(),(int)this.getCenterY(),Tile.SIZE/2,this.inventory.getContents()[y][x],this.world));
+				}
+			}
+		}
 		}
 	}
 	
