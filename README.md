@@ -1,6 +1,6 @@
 # DungeonGame
 
-Hello! This was a project that I worked on in December 2021 and January 2022. The basic framework of the game is based off a Dungeon Crawler made by HexagonNico. Here is the GitHub link: https://github.com/HexagonNico/Dungeon-Crawler. 
+Hello! This was a project that I worked on in December 2021 and January 2022. The framework of the game is based off a Dungeon Crawler made by HexagonNico. Here is the GitHub link: https://github.com/HexagonNico/Dungeon-Crawler. 
 
 Although my game uses much of HexagonNico's code, I also added some features of my own. For example, I:
 - Designed my own dungeon generation algorithm
