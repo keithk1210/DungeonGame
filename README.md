@@ -5,7 +5,7 @@ Hello! This was a project that I worked on in December 2021 and January 2022. Th
 Although my game uses much of HexagonNico's code, I also added some features of my own. For example, I:
 - Designed my own dungeon generation algorithm
 - Designed my own enemy pathfinding algorithm that moves the enemies based on the angle between them and the player
-- Added an 8-direction shooting system for the player
+- Added an 9-direction shooting system for the player
 
 Throughout the course of the project, I learned more about
 - Object Oriented Programming
